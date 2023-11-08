@@ -1,20 +1,25 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 
 import { Modal, View, Text, TouchableOpacity, TextInput, ScrollView } from "react-native";
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { ExpensesContext } from "./store/Expenses-context";
 
-export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, title, price, timeVal})=> {
+export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, id, title, price, timeVal})=> {
 
     const [modalVisible, setModalVisibile] = useState(true);
 
+    const [expenseID, setExpenseID]         = useState('');
     const [expenseTitle, setExpenseTitle] = useState('');
     const [expensePrice, setExpensePrice] = useState();
     const [expenseTime, setExpenseTime] = useState('');
 
+    const expensesCtx = useContext(ExpensesContext);
+
     useEffect(()=> {
         setModalVisibile(modalVisibility);
 
+        setExpenseID(id);
         setExpenseTitle(title);
         setExpensePrice(price);
         setExpenseTime(timeVal);
@@ -34,6 +39,29 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, t
                 </View>
             </>
         )
+    }
+
+    const updateExpenseData=()=> {
+        if(expenseTitle != '' && expensePrice != 0 && expenseTime != '') {
+            expensesCtx.updateExpenses(
+                expenseID,
+                {
+                    idVal:expenseID,
+                    title: expenseTitle,
+                    price: expensePrice,
+                    time: expenseTime 
+                }
+            );
+
+            alert("Data saved successfully");
+            
+            setModalVisibile(false); 
+            handleUpdateExpenseModal(false)
+        }
+        else {
+            alert('Please add the data!');
+        }
+        
     }
 
     return (
@@ -75,7 +103,7 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, t
                             keyboardType="default"
                             maxLength={15} />
 
-                        <TouchableOpacity style={{borderColor:'white', borderWidth:1, margin:15, alignItems:'center'}}>
+                        <TouchableOpacity style={{borderColor:'white', borderWidth:1, margin:15, alignItems:'center'}} onPress={()=> updateExpenseData()}>
                             <Text style={{color:"white", fontSize:16, margin:10}}>Update</Text>
                         </TouchableOpacity>
 

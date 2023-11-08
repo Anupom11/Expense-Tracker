@@ -1,11 +1,13 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import {Text, Button, TextInput, View, Alert, TouchableOpacity, StatusBar, FlatList } from "react-native";
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import UpdateExpensesModal from "./UpdateExpenses";
 import AddExpenseModal from "./AddExpenses";
 
-import { DATA } from "./dataset/datavalue";
+//import { DATA } from "./dataset/datavalue";
+
+import {ExpensesContext} from "./store/Expenses-context";
 
 const HeaderSection=({handleAddExpenseModal})=> {
     return (
@@ -28,9 +30,14 @@ export default Main=()=> {
     const [addExpenseModal, setAddExpenseModal] = useState(false);
     const [updateExpenseModal, setUpdateExpenseModal] = useState(false);
 
+    const [selectedExpenseID, setSelectedExpenseID]         = useState('');
     const [selectedExpenseTitle, setSelectedExpenseTitle] = useState('');
     const [selectedExpensePrice, setSelectedExpensePrice] = useState();
     const [selectedExpenseTime, setSelectedExpenseTime] = useState('');
+
+    const expensesCtx = useContext(ExpensesContext);
+
+    const DATA = expensesCtx.expenses;
 
     const ExpenseBodySection=()=> {
         return (
@@ -43,7 +50,7 @@ export default Main=()=> {
     
                 <FlatList
                     data={DATA}
-                    renderItem={({item}) => <ExpenseDtlSection title={item.title} price={item.price} time={item.time}/> }
+                    renderItem={({item}) => <ExpenseDtlSection id={item.id} title={item.title} price={item.price} time={item.time}/> }
                     keyExtractor={item => item.id}
                 />
     
@@ -51,11 +58,11 @@ export default Main=()=> {
         )
     }
 
-    const ExpenseDtlSection=({title, price, time})=> {
+    const ExpenseDtlSection=({id, title, price, time})=> {
         return (            
             <TouchableOpacity 
-                onPress={()=> handleUpdateExpenseModal(true, title, price, time)}
-                onLongPress={()=> alert("Delete operation!")}>
+                onPress={()=> handleUpdateExpenseModal(true, id, title, price, time)}
+                onLongPress={()=> handleDeleteOperation(id)}>
                 <View style={{flexDirection:'row', justifyContent:'space-between', borderRadius:10, borderColor:'white', borderWidth:1, margin:10, padding: 10, backgroundColor:'black', height:80,  }}>
                     <View style={{backgroundColor:'black', alignSelf:'center' }}>
                         <Text style={{alignSelf:'flex-start', maxWidth:250, maxHeight:30, fontWeight:'bold', fontSize:20, color:'white'}}>{title}</Text>
@@ -73,12 +80,27 @@ export default Main=()=> {
         setAddExpenseModal(flag);
     }
 
-    const handleUpdateExpenseModal=(flag, title, price, time)=> {
+    const handleUpdateExpenseModal=(flag, id, title, price, time)=> {
         setUpdateExpenseModal(flag);
 
+        setSelectedExpenseID(id);
         setSelectedExpenseTitle(title);
         setSelectedExpensePrice(price);
         setSelectedExpenseTime(time);
+    }
+
+    const handleDeleteOperation=(id)=> {
+        Alert.alert('Confirm', 'Are you sure you want to delete?', [
+            {
+                text:'Yes',
+                onPress:()=> { expensesCtx.deleteExpenses(id); alert("Data delete successfully") }
+            },
+            {
+                text:'No',
+                onPress:()=> {}
+            }
+        ]);
+        
     }
 
     return (
@@ -112,6 +134,7 @@ export default Main=()=> {
                     <UpdateExpensesModal 
                         modalVisibility={updateExpenseModal} 
                         handleUpdateExpenseModal={handleUpdateExpenseModal}
+                        id={selectedExpenseID}
                         title={selectedExpenseTitle} 
                         price={selectedExpensePrice} 
                         timeVal={selectedExpenseTime} /> 

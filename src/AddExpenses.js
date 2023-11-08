@@ -1,8 +1,10 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useContext} from "react";
 
 import { Modal, View, Text, TouchableOpacity, TextInput, ScrollView } from "react-native";
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+import { ExpensesContext } from "./store/Expenses-context";
 
 export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
 
@@ -11,6 +13,8 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
     const [expenseTitle, setExpenseTitle] = useState('');
     const [expensePrice, setExpensePrice] = useState(0);
     const [expenseTime, setExpenseTime] = useState('');
+
+    const expensesCtx = useContext(ExpensesContext);
 
     useEffect(()=> {
         setModalVisibile(modalVisibility);
@@ -29,6 +33,26 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
                 </View>
             </>
         )
+    }
+
+    const addExpenseData=()=> {
+        if(expenseTitle != '' && expensePrice != 0 && expenseTime != '') {
+            expensesCtx.addExpenses({
+                id:new Date().toString + Math.random.toString(),
+                title: expenseTitle,
+                price: expensePrice,
+                time: expenseTime 
+            });
+
+            alert("Data saved successfully");
+            
+            setModalVisibile(false); 
+            handleAddExpenseModal(false)
+        }
+        else {
+            alert('Please add the data!');
+        }
+        
     }
 
     return (
@@ -70,7 +94,7 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
                             keyboardType="default"
                             maxLength={15} />
 
-                        <TouchableOpacity style={{borderColor:'white', borderWidth:1, margin:15, alignItems:'center'}}>
+                        <TouchableOpacity style={{borderColor:'white', borderWidth:1, margin:15, alignItems:'center'}} onPress={()=>addExpenseData()}>
                             <Text style={{color:"white", fontSize:16, margin:10}}>Save</Text>
                         </TouchableOpacity>
 
