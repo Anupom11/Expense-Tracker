@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { ExpensesContext } from "./store/Expenses-context";
 
+import { getDataValue, saveDataValue } from "./store/sqlite_storage";
+
 export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
 
     const [modalVisible, setModalVisibile] = useState(true);
@@ -37,6 +39,10 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
 
     const addExpenseData=()=> {
         if(expenseTitle != '' && expensePrice != 0 && expenseTime != '') {
+
+            //saveDataValue();
+            getDataValue();
+
             expensesCtx.addExpenses({
                 id:new Date().toString + Math.random.toString(),
                 title: expenseTitle,
