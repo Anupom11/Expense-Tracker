@@ -6,6 +6,7 @@ import UpdateExpensesModal from "./UpdateExpenses";
 import AddExpenseModal from "./AddExpenses";
 
 //import { DATA } from "./dataset/datavalue";
+import { getDataValue } from "./store/sqlite_storage";
 
 import {ExpensesContext} from "./store/Expenses-context";
 
@@ -38,6 +39,13 @@ export default Main=()=> {
     const expensesCtx = useContext(ExpensesContext);
 
     const DATA = expensesCtx.expenses;
+
+    //<<<--------------------------->>>
+    // get the data value
+    getDataValue(response=> {
+        console.log("DataSet::"+JSON.stringify(response));
+    });
+    //<<<--------------------------->>>
 
     const ExpenseBodySection=()=> {
         return (

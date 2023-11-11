@@ -40,9 +40,10 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
     const addExpenseData=()=> {
         if(expenseTitle != '' && expensePrice != 0 && expenseTime != '') {
 
-            //saveDataValue();
-            getDataValue();
-
+            saveDataValue(expenseTitle, expensePrice, expenseTime, response=> {
+                alert(response);
+            });
+            
             expensesCtx.addExpenses({
                 id:new Date().toString + Math.random.toString(),
                 title: expenseTitle,

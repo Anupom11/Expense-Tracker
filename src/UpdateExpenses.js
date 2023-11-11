@@ -4,6 +4,7 @@ import { Modal, View, Text, TouchableOpacity, TextInput, ScrollView } from "reac
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ExpensesContext } from "./store/Expenses-context";
+import { updateDataValue } from "./store/sqlite_storage";
 
 export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, id, title, price, timeVal})=> {
 
@@ -43,6 +44,11 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
 
     const updateExpenseData=()=> {
         if(expenseTitle != '' && expensePrice != 0 && expenseTime != '') {
+
+            updateDataValue(expenseID, expenseTitle, expensePrice, expenseTime, response=> {
+                alert(response);
+            });
+
             expensesCtx.updateExpenses(
                 expenseID,
                 {
