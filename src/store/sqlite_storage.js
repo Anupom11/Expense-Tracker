@@ -81,3 +81,19 @@ export const getDataValue=(callback)=> {
     });
 }
 
+export const deleteDataValue=(id, callback)=> {
+    db.transaction(tx=> {   
+        tx.executeSql(
+            "delete from ExpenseData where id=?",
+            [id],
+            (tx, results)=> { 
+                callback(results.rowsAffected+" no of data deleted!");
+            },
+            (err) => {
+                //console.log(err.message);
+                callback(err.message);
+            }
+        )
+    });
+}
+

@@ -6,7 +6,7 @@ import UpdateExpensesModal from "./UpdateExpenses";
 import AddExpenseModal from "./AddExpenses";
 
 //import { DATA } from "./dataset/datavalue";
-import { getDataValue } from "./store/sqlite_storage";
+import { getDataValue, deleteDataValue } from "./store/sqlite_storage";
 
 import {ExpensesContext} from "./store/Expenses-context";
 
@@ -91,6 +91,9 @@ export default Main=()=> {
 
     const handleAddExpenseModal=(flag)=> {
         setAddExpenseModal(flag);
+
+        // refresh the expense list
+        refreshData();
     }
 
     const handleUpdateExpenseModal=(flag, id, title, price, time)=> {
@@ -102,17 +105,31 @@ export default Main=()=> {
         setSelectedExpenseTime(time);
 
         // refresh the expense list
+        refreshData();
+
+    }
+
+    const refreshData=()=> {
+        // refresh the expense list
         getDataValue(response=> {
             setDATA(response); 
         });
-        
     }
 
     const handleDeleteOperation=(id)=> {
         Alert.alert('Confirm', 'Are you sure you want to delete?', [
             {
                 text:'Yes',
-                onPress:()=> { expensesCtx.deleteExpenses(id); alert("Data delete successfully") }
+                onPress:()=> { 
+                    //expensesCtx.deleteExpenses(id); 
+
+                    deleteDataValue(id, response=> {
+                        alert(response);
+                        refreshData();
+                    });
+
+                    //alert("Data delete successfully") 
+                }
             },
             {
                 text:'No',
