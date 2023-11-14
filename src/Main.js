@@ -61,11 +61,20 @@ export default Main=()=> {
                     <Text style={{alignSelf:'center', fontSize:18, fontWeight:'bold', color:'black'}}>Rs. 100</Text>
                 </View>
     
-                <FlatList
-                    data={DATA}
-                    renderItem={({item}) => <ExpenseDtlSection id={item.id} title={item.title} price={item.price} time={item.time}/> }
-                    keyExtractor={item => item.id}
-                />
+                {
+                    DATA.length > 0 ?
+                        <FlatList
+                            data={DATA}
+                            renderItem={({item}) => <ExpenseDtlSection id={item.id} title={item.title} price={item.price} time={item.time}/> }
+                            keyExtractor={item => item.id}
+                        />
+                    :
+                        <View style={{ alignSelf:'center', alignContent:'center', alignItems:'center', backgroundColor:'black', marginTop:50}}>
+                            <Text style={{color:'white'}}>No expense data present!</Text>
+                        </View>
+                }
+
+                
     
             </View>
         )
