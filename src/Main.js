@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import {Text, Button, TextInput, View, Alert, TouchableOpacity, StatusBar, FlatList } from "react-native";
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -36,18 +36,23 @@ export default Main=()=> {
     const [selectedExpensePrice, setSelectedExpensePrice] = useState();
     const [selectedExpenseTime, setSelectedExpenseTime] = useState('');
 
-    const expensesCtx = useContext(ExpensesContext);
+    //const expensesCtx = useContext(ExpensesContext);
+    //const DATA = expensesCtx.expenses;
 
-    const DATA = expensesCtx.expenses;
+    const [DATA, setDATA] = useState([]);
 
-    //<<<--------------------------->>>
-    // get the data value
-    getDataValue(response=> {
-        console.log("DataSet::"+JSON.stringify(response));
-    });
-    //<<<--------------------------->>>
+    useEffect(()=> {
+        
+        //<<<--------------------------->>>
+        // get the data value
+        getDataValue(response=> {
+            setDATA(response); 
+        });
+        //<<<--------------------------->>>
 
-    const ExpenseBodySection=()=> {
+    }, []);
+
+    const ExpenseBodySection=()=> { 
         return (
             <View style={{backgroundColor:'black', flex:1}}>
                 
@@ -66,7 +71,7 @@ export default Main=()=> {
         )
     }
 
-    const ExpenseDtlSection=({id, title, price, time})=> {
+    const ExpenseDtlSection=({id, title, price, time})=> { 
         return (            
             <TouchableOpacity 
                 onPress={()=> handleUpdateExpenseModal(true, id, title, price, time)}
@@ -95,6 +100,12 @@ export default Main=()=> {
         setSelectedExpenseTitle(title);
         setSelectedExpensePrice(price);
         setSelectedExpenseTime(time);
+
+        // refresh the expense list
+        getDataValue(response=> {
+            setDATA(response); 
+        });
+        
     }
 
     const handleDeleteOperation=(id)=> {

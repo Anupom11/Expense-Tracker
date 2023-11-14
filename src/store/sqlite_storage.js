@@ -72,7 +72,6 @@ export const getDataValue=(callback)=> {
                 }
 
                 callback(dataSet);
-
             }, 
             (err) => { 
                 console.log(err.message); 
