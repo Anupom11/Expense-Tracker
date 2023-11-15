@@ -40,6 +40,7 @@ export default Main=()=> {
     //const DATA = expensesCtx.expenses;
 
     const [DATA, setDATA] = useState([]);
+    const [totalExpense, setTotalExpense] = useState(0);
 
     useEffect(()=> {
         
@@ -47,6 +48,7 @@ export default Main=()=> {
         // get the data value
         getDataValue(response=> {
             setDATA(response); 
+            calcTotalExpense(response);
         });
         //<<<--------------------------->>>
 
@@ -55,21 +57,23 @@ export default Main=()=> {
     const ExpenseBodySection=()=> { 
         return (
             <View style={{backgroundColor:'black', flex:1}}>
-                
-                <View style={{flexDirection:'row', justifyContent:'space-between', borderRadius:10, margin:10, padding: 10, backgroundColor:'white', height:50,  }}>
-                    <Text style={{alignSelf:'center', fontSize:16, color:'black'}}>Last 7 days</Text>
-                    <Text style={{alignSelf:'center', fontSize:18, fontWeight:'bold', color:'black'}}>Rs. 100</Text>
-                </View>
     
                 {
                     DATA.length > 0 ?
-                        <FlatList
-                            data={DATA}
-                            renderItem={({item}) => <ExpenseDtlSection id={item.id} title={item.title} price={item.price} time={item.time}/> }
-                            keyExtractor={item => item.id}
-                        />
+                        <View>
+                            <View style={{flexDirection:'row', justifyContent:'space-between', borderRadius:10, margin:10, padding: 10, backgroundColor:'white', height:50,  }}>
+                                <Text style={{alignSelf:'center', fontSize:16, color:'black'}}>Last 7 days</Text>
+                                <Text style={{alignSelf:'center', fontSize:18, fontWeight:'bold', color:'black'}}>Rs. {totalExpense}</Text>
+                            </View>
+
+                            <FlatList
+                                data={DATA}
+                                renderItem={({item}) => <ExpenseDtlSection id={item.id} title={item.title} price={item.price} time={item.time}/> }
+                                keyExtractor={item => item.id}
+                            />
+                        </View>
                     :
-                        <View style={{ alignSelf:'center', alignContent:'center', alignItems:'center', backgroundColor:'black', marginTop:50}}>
+                        <View style={{ alignSelf:'center', backgroundColor:'black', marginTop:50}}>
                             <Text style={{color:'white'}}>No expense data present!</Text>
                         </View>
                 }
@@ -122,7 +126,18 @@ export default Main=()=> {
         // refresh the expense list
         getDataValue(response=> {
             setDATA(response); 
+            calcTotalExpense(response);
         });
+    }
+
+    const calcTotalExpense=(expenseDataSet)=> {
+        var totalExpenseVal = 0;
+
+        expenseDataSet.map(item=> {
+            totalExpenseVal += parseFloat(item.price);
+        });
+
+        setTotalExpense(totalExpenseVal);
     }
 
     const handleDeleteOperation=(id)=> {
