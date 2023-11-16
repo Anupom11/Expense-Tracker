@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from "react";
 
-import { Modal, View, Text, TouchableOpacity, TextInput, ScrollView } from "react-native";
+import { Modal, View, Text, TouchableOpacity, TextInput, ScrollView, Pressable } from "react-native";
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -8,13 +8,20 @@ import { ExpensesContext } from "./store/Expenses-context";
 
 import { getDataValue, saveDataValue } from "./store/sqlite_storage";
 
+import Moment from 'moment';
+
+import DatePicker from 'react-native-date-picker';
+
 export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
 
     const [modalVisible, setModalVisibile] = useState(true);
 
-    const [expenseTitle, setExpenseTitle] = useState('');
-    const [expensePrice, setExpensePrice] = useState(0);
-    const [expenseTime, setExpenseTime] = useState('');
+    const [expenseTitle, setExpenseTitle]   = useState('');
+    const [expensePrice, setExpensePrice]   = useState(0);
+    const [expenseTime, setExpenseTime]     = useState();
+
+    const [date, setDate] = useState(new Date())
+    const [open, setOpen] = useState(false)
 
     const expensesCtx = useContext(ExpensesContext);
 
@@ -38,9 +45,12 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
     }
 
     const addExpenseData=()=> {
+
         if(expenseTitle != '' && expensePrice != 0 && expenseTime != '') {
 
-            saveDataValue(expenseTitle, expensePrice, expenseTime, response=> {
+            const expenseFormattedVal = Moment(new Date(expenseTime)).format("DD/MM/YYYY");
+
+            saveDataValue(expenseTitle, expensePrice, expenseFormattedVal, response=> {
                 alert(response);
             });
             
@@ -48,7 +58,7 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
                 id:new Date().toString + Math.random.toString(),
                 title: expenseTitle,
                 price: expensePrice,
-                time: expenseTime 
+                time: expenseFormattedVal 
             });
 
             alert("Data saved successfully");
@@ -93,13 +103,32 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
                             maxLength={15} />
 
                         <Text style={{color:'white', marginStart:10, fontSize:16}}>Date</Text>
-                        <TextInput 
-                            style={{backgroundColor:'white', margin:10, borderRadius:5}}
-                            onChangeText={(text)=> setExpenseTime(text)}
-                            value={expenseTime}
-                            placeholder="Expense time"
-                            keyboardType="default"
-                            maxLength={15} />
+                        <Pressable onPress={()=> setOpen(true)}>
+                            <View pointerEvents="none">
+                                <TextInput
+                                    style={{backgroundColor:'white', margin:10, borderRadius:5}}
+                                    onChangeText={(text)=> setExpenseTime(text)}
+                                    value={expenseTime}
+                                    placeholder="Expense time"
+                                    keyboardType="default"
+                                    maxLength={15}
+                                    editable={true} />
+                            </View>
+                        </Pressable>
+
+                        <DatePicker
+                            modal
+                            mode="date"
+                            open={open}
+                            date={date}
+                            onConfirm={(date) => {
+                                setOpen(false) 
+                                setExpenseTime(date+"")
+                            }}
+                            onCancel={() => {
+                                setOpen(false)
+                            }}
+                        />
 
                         <TouchableOpacity style={{borderColor:'white', borderWidth:1, margin:15, alignItems:'center'}} onPress={()=>addExpenseData()}>
                             <Text style={{color:"white", fontSize:16, margin:10}}>Save</Text>
