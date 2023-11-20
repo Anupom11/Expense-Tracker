@@ -48,7 +48,7 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
 
         if(expenseTitle != '' && expensePrice != 0 && expenseTime != '') {
 
-            const expenseFormattedVal = Moment(new Date(expenseTime)).format("DD/MM/YYYY");
+            const expenseFormattedVal = Moment(new Date(expenseTime)).format("YYYY-MM-DD");
 
             saveDataValue(expenseTitle, expensePrice, expenseFormattedVal, response=> {
                 alert(response);
