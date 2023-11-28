@@ -12,6 +12,8 @@ import Moment from 'moment';
 
 import DatePicker from 'react-native-date-picker';
 
+import { TextInputComponent, TextInputComponent1 } from "./component/FormComponents";
+
 export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
 
     const [modalVisible, setModalVisibile] = useState(true);
@@ -19,6 +21,15 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
     const [expenseTitle, setExpenseTitle]   = useState('');
     const [expensePrice, setExpensePrice]   = useState(0);
     const [expenseTime, setExpenseTime]     = useState();
+    const [expenseDesc, setExpenseDesc]     = useState('');
+
+
+    const [inputValue, setInputValue] = useState({
+        expenseTitle: '',
+        expensePrice: 0,
+        expenseTime: null,
+    });
+
 
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
@@ -28,6 +39,19 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
     useEffect(()=> {
         setModalVisibile(modalVisibility);
     }, [false]);
+
+    const getExpenseDesc=(desc)=> {
+        setExpenseDesc(desc);
+    }
+
+    const inputChangeHandler=(inputIndentifier, enteredValue)=> {
+        setInputValue((curInputValues)=> {
+            return {
+                ...curInputValues,
+                [inputIndentifier]: enteredValue
+            };
+        });
+    }
 
     const HeaderSection=()=> {
         return (
@@ -78,20 +102,29 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
             transparent={true}
             visible={modalVisible}
             onRequestClose={()=> {setModalVisibile(false); handleAddExpenseModal(false)}} >
-
             
                 <View style={{backgroundColor:'black', flex:1}}>
 
                     <HeaderSection/>
                 
                     <View style={{marginTop:10}}>
-                        <Text style={{color:'white', marginStart:10, fontSize:16}}>Expense Title</Text>
+                        {/* <Text style={{color:'white', marginStart:10, fontSize:16}}>Expense Title</Text>
                         <TextInput 
                             style={{backgroundColor:'white', margin:10, borderRadius:5}}
                             onChangeText={(text)=> setExpenseTitle(text)}
                             value={expenseTitle}
                             placeholder="Expense title"
-                            maxLength={50} />
+                            maxLength={50} /> */}
+
+                        <TextInputComponent
+                            label="Expense Title"
+                            textInputConfig={{
+                                keyboardType:"default",
+                                placeholder:"Expense Title",
+                                onChangeText: inputChangeHandler.bind(this, expenseTitle),
+                                value: inputValue.expenseTitle
+                            }}
+                        />
 
                         <Text style={{color:'white', marginStart:10, fontSize:16}}>Price</Text>
                         <TextInput 
@@ -130,15 +163,30 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
                             }}
                         />
 
+                        {/* <TextInputComponent1
+                            label={"Description"}
+                            keyboardType={"default"}
+                            maxLengthVal={50}
+                            placeHolder={"Description"} /> */}
+
+                        <TextInputComponent
+                            label="Description"
+                            textInputConfig={{
+                                keyboardType:"default",
+                                maxLength:100,
+                                multiLine: true,
+                                placeholder:"Description",
+                                onChangeText: getExpenseDesc,
+                                value: expenseDesc
+                            }}/>
+
                         <TouchableOpacity style={{borderColor:'white', borderWidth:1, margin:15, alignItems:'center'}} onPress={()=>addExpenseData()}>
                             <Text style={{color:"white", fontSize:16, margin:10}}>Save</Text>
                         </TouchableOpacity>
 
                     </View>
 
-                    
-                </View>
-            
+                </View>         
 
         </Modal>
     )
