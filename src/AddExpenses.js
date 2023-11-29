@@ -18,18 +18,14 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
 
     const [modalVisible, setModalVisibile] = useState(true);
 
-    const [expenseTitle, setExpenseTitle]   = useState('');
-    const [expensePrice, setExpensePrice]   = useState(0);
-    const [expenseTime, setExpenseTime]     = useState();
-    const [expenseDesc, setExpenseDesc]     = useState('');
-
-
+    //---------------------------------------------------
     const [inputValue, setInputValue] = useState({
         expenseTitle: '',
-        expensePrice: 0,
-        expenseTime: null,
+        expensePrice: '',
+        expenseTime: '',
+        expenseDesc: ''
     });
-
+    //---------------------------------------------------
 
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
@@ -40,11 +36,8 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
         setModalVisibile(modalVisibility);
     }, [false]);
 
-    const getExpenseDesc=(desc)=> {
-        setExpenseDesc(desc);
-    }
+    const inputChangeHandler=(inputIndentifier, enteredValue)=> { 
 
-    const inputChangeHandler=(inputIndentifier, enteredValue)=> {
         setInputValue((curInputValues)=> {
             return {
                 ...curInputValues,
@@ -70,25 +63,26 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
 
     const addExpenseData=()=> {
 
-        if(expenseTitle != '' && expensePrice != 0 && expenseTime != '') {
+        if(inputValue.expenseTitle != '' && inputValue.expensePrice != 0 && inputValue.expenseTime != '') {
 
-            const expenseFormattedVal = Moment(new Date(expenseTime)).format("YYYY-MM-DD");
+            const expenseFormattedVal = Moment(new Date(inputValue.expenseTime)).format("YYYY-MM-DD"); 
 
-            saveDataValue(expenseTitle, expensePrice, expenseFormattedVal, response=> {
+            saveDataValue(inputValue.expenseTitle, inputValue.expensePrice, expenseFormattedVal, response=> {
                 alert(response);
             });
             
-            expensesCtx.addExpenses({
+            /* expensesCtx.addExpenses({
                 id:new Date().toString + Math.random.toString(),
                 title: expenseTitle,
                 price: expensePrice,
                 time: expenseFormattedVal 
-            });
+            }); */
 
             alert("Data saved successfully");
             
             setModalVisibile(false); 
-            handleAddExpenseModal(false)
+            handleAddExpenseModal(false);
+
         }
         else {
             alert('Please add the data!');
@@ -108,44 +102,36 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
                     <HeaderSection/>
                 
                     <View style={{marginTop:10}}>
-                        {/* <Text style={{color:'white', marginStart:10, fontSize:16}}>Expense Title</Text>
-                        <TextInput 
-                            style={{backgroundColor:'white', margin:10, borderRadius:5}}
-                            onChangeText={(text)=> setExpenseTitle(text)}
-                            value={expenseTitle}
-                            placeholder="Expense title"
-                            maxLength={50} /> */}
-
+                    
                         <TextInputComponent
                             label="Expense Title"
                             textInputConfig={{
                                 keyboardType:"default",
                                 placeholder:"Expense Title",
-                                onChangeText: inputChangeHandler.bind(this, expenseTitle),
+                                onChangeText: inputChangeHandler.bind(this, 'expenseTitle'),
                                 value: inputValue.expenseTitle
                             }}
                         />
 
-                        <Text style={{color:'white', marginStart:10, fontSize:16}}>Price</Text>
-                        <TextInput 
-                            style={{backgroundColor:'white', margin:10, borderRadius:5}}
-                            onChangeText={(text)=> setExpensePrice(text)}
-                            value={expensePrice+""}
-                            placeholder="Expense Price"
-                            keyboardType="numeric"
-                            maxLength={15} />
+                        <TextInputComponent
+                            label="Expense Price"
+                            textInputConfig={{
+                                keyboardType: "numeric",
+                                placeholder: "Expense Price",
+                                onChangeText: inputChangeHandler.bind(this, 'expensePrice'),
+                                value: inputValue.expensePrice.toString()
+                            }}  />
 
-                        <Text style={{color:'white', marginStart:10, fontSize:16}}>Date</Text>
                         <Pressable onPress={()=> setOpen(true)}>
                             <View pointerEvents="none">
-                                <TextInput
-                                    style={{backgroundColor:'white', margin:10, borderRadius:5}}
-                                    onChangeText={(text)=> setExpenseTime(text)}
-                                    value={expenseTime}
-                                    placeholder="Expense time"
-                                    keyboardType="default"
-                                    maxLength={15}
-                                    editable={true} />
+                                <TextInputComponent
+                                    label="Date"
+                                    textInputConfig={{
+                                        keyboardType: "default",
+                                        placeholder: "Expense Date",
+                                        onChangeText: inputChangeHandler.bind(this, 'expenseTime'), 
+                                        value: inputValue.expenseTime
+                                    }}  />
                             </View>
                         </Pressable>
 
@@ -155,30 +141,23 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
                             open={open}
                             date={date}
                             onConfirm={(date) => {
-                                setOpen(false) 
-                                setExpenseTime(date+"")
+                                setOpen(false) ; 
+                                inputChangeHandler('expenseTime', date.toString()); 
                             }}
                             onCancel={() => {
                                 setOpen(false)
                             }}
                         />
 
-                        {/* <TextInputComponent1
-                            label={"Description"}
-                            keyboardType={"default"}
-                            maxLengthVal={50}
-                            placeHolder={"Description"} /> */}
-
                         <TextInputComponent
                             label="Description"
                             textInputConfig={{
                                 keyboardType:"default",
-                                maxLength:100,
-                                multiLine: true,
                                 placeholder:"Description",
-                                onChangeText: getExpenseDesc,
-                                value: expenseDesc
-                            }}/>
+                                onChangeText: inputChangeHandler.bind(this, 'expenseDesc'),
+                                value: inputValue.expenseDesc,
+                                maxLengthVal:50, 
+                            }} />
 
                         <TouchableOpacity style={{borderColor:'white', borderWidth:1, margin:15, alignItems:'center'}} onPress={()=>addExpenseData()}>
                             <Text style={{color:"white", fontSize:16, margin:10}}>Save</Text>
