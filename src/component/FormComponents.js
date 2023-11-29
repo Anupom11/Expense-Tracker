@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 
-import {Text, TextInput, View} from 'react-native';
+import {Text, TextInput, View, StyleSheet} from 'react-native';
 
 export const TextInputComponent=({label, textInputConfig})=> {
     return (
@@ -12,6 +12,29 @@ export const TextInputComponent=({label, textInputConfig})=> {
         </View>
     )
 }
+
+export const DescInputComponent=({label, textInputConfig})=> {
+    return (
+        <View>
+            <Text style={{color:'white', marginStart:10, fontSize:16}}>{label}</Text>
+            <TextInput
+                style={styles.descStyle}
+                {...textInputConfig}    />
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+    descStyle: {
+        margin:10,
+        alignItems: 'center', 
+        height: 100, 
+        width: '95%', 
+        backgroundColor: 'white', 
+        borderRadius: 5, 
+        textAlignVertical:'top'
+    }
+})
 
 export const TextInputComponent1 =({label, keyboardType, maxLengthVal, placeHolder})=> {
 

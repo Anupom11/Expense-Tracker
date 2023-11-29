@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from "react";
 
-import { Modal, View, Text, TouchableOpacity, TextInput, ScrollView, Pressable } from "react-native";
+import { Modal, View, Text, TouchableOpacity, TextInput, ScrollView, Pressable, } from "react-native";
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -12,7 +12,7 @@ import Moment from 'moment';
 
 import DatePicker from 'react-native-date-picker';
 
-import { TextInputComponent, TextInputComponent1 } from "./component/FormComponents";
+import { TextInputComponent, DescInputComponent, TextInputComponent1 } from "./component/FormComponents";
 
 export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
 
@@ -97,77 +97,101 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
             visible={modalVisible}
             onRequestClose={()=> {setModalVisibile(false); handleAddExpenseModal(false)}} >
             
-                <View style={{backgroundColor:'black', flex:1}}>
+            <View style={{backgroundColor:'black', flex:1}}>
 
-                    <HeaderSection/>
-                
-                    <View style={{marginTop:10}}>
+                <ScrollView>
+
+                    <View style={{backgroundColor:'black', flex:1}}>
+
+                        <HeaderSection/>
                     
-                        <TextInputComponent
-                            label="Expense Title"
-                            textInputConfig={{
-                                keyboardType:"default",
-                                placeholder:"Expense Title",
-                                onChangeText: inputChangeHandler.bind(this, 'expenseTitle'),
-                                value: inputValue.expenseTitle
-                            }}
-                        />
+                        <View style={{marginTop:10}}>
+                        
+                            <TextInputComponent
+                                label="Expense Title"
+                                textInputConfig={{
+                                    keyboardType:"default",
+                                    placeholder:"Expense Title",
+                                    onChangeText: inputChangeHandler.bind(this, 'expenseTitle'),
+                                    value: inputValue.expenseTitle
+                                }}
+                            />
 
-                        <TextInputComponent
-                            label="Expense Price"
-                            textInputConfig={{
-                                keyboardType: "numeric",
-                                placeholder: "Expense Price",
-                                onChangeText: inputChangeHandler.bind(this, 'expensePrice'),
-                                value: inputValue.expensePrice.toString()
-                            }}  />
+                            <TextInputComponent
+                                label="Expense Price"
+                                textInputConfig={{
+                                    keyboardType: "numeric",
+                                    placeholder: "Expense Price",
+                                    onChangeText: inputChangeHandler.bind(this, 'expensePrice'),
+                                    value: inputValue.expensePrice.toString()
+                                }}  />
 
-                        <Pressable onPress={()=> setOpen(true)}>
-                            <View pointerEvents="none">
-                                <TextInputComponent
-                                    label="Date"
-                                    textInputConfig={{
-                                        keyboardType: "default",
-                                        placeholder: "Expense Date",
-                                        onChangeText: inputChangeHandler.bind(this, 'expenseTime'), 
-                                        value: inputValue.expenseTime
-                                    }}  />
-                            </View>
-                        </Pressable>
+                            <Pressable onPress={()=> setOpen(true)}>
+                                <View pointerEvents="none">
+                                    <TextInputComponent
+                                        label="Date"
+                                        textInputConfig={{
+                                            keyboardType: "default",
+                                            placeholder: "Expense Date",
+                                            onChangeText: inputChangeHandler.bind(this, 'expenseTime'), 
+                                            value: inputValue.expenseTime
+                                        }}  />
+                                </View>
+                            </Pressable>
 
-                        <DatePicker
-                            modal
-                            mode="date"
-                            open={open}
-                            date={date}
-                            onConfirm={(date) => {
-                                setOpen(false) ; 
-                                inputChangeHandler('expenseTime', date.toString()); 
-                            }}
-                            onCancel={() => {
-                                setOpen(false)
-                            }}
-                        />
+                            <DatePicker
+                                modal
+                                mode="date"
+                                open={open}
+                                date={date}
+                                onConfirm={(date) => {
+                                    setOpen(false) ; 
+                                    inputChangeHandler('expenseTime', date.toString()); 
+                                }}
+                                onCancel={() => {
+                                    setOpen(false)
+                                }}
+                            />
 
-                        <TextInputComponent
-                            label="Description"
-                            textInputConfig={{
-                                keyboardType:"default",
-                                placeholder:"Description",
-                                onChangeText: inputChangeHandler.bind(this, 'expenseDesc'),
-                                value: inputValue.expenseDesc,
-                                maxLengthVal:50, 
-                            }} />
+                            <TextInputComponent
+                                label="Description"
+                                textInputConfig={{
+                                    keyboardType:"default",
+                                    placeholder:"Description",
+                                    onChangeText: inputChangeHandler.bind(this, 'expenseDesc'),
+                                    value: inputValue.expenseDesc,
+                                    maxLengthVal:50, 
+                                    numberOfLine: 4,
+                                    multiline: true,   
+                                }} />
 
-                        <TouchableOpacity style={{borderColor:'white', borderWidth:1, margin:15, alignItems:'center'}} onPress={()=>addExpenseData()}>
-                            <Text style={{color:"white", fontSize:16, margin:10}}>Save</Text>
-                        </TouchableOpacity>
+                            <DescInputComponent
+                                label="Description"
+                                textInputConfig={{
+                                    keyboardType:"default",
+                                    placeholder:"Description",
+                                    onChangeText: inputChangeHandler.bind(this, 'expenseDesc'),
+                                    value: inputValue.expenseDesc,
+                                    maxLengthVal:50, 
+                                    numberOfLine: 4,
+                                    multiline: true,   
+                                }} />
 
-                    </View>
+                            <TouchableOpacity style={{borderColor:'white', borderWidth:1, margin:15, alignItems:'center'}} onPress={()=>addExpenseData()}>
+                                <Text style={{color:"white", fontSize:16, margin:10}}>Save</Text>
+                            </TouchableOpacity>
 
-                </View>         
+                        </View>
+
+                    </View>      
+                       
+                </ScrollView>
+            
+            </View>
 
         </Modal>
     )
 
 }
+
+
