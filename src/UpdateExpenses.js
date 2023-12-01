@@ -16,11 +16,6 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
 
     const [modalVisible, setModalVisibile] = useState(true);
 
-    /* const [expenseID, setExpenseID]         = useState('');
-    const [expenseTitle, setExpenseTitle] = useState('');
-    const [expensePrice, setExpensePrice] = useState();
-    const [expenseTime, setExpenseTime] = useState(''); */
-
     const [inputValue, setInputvalue] = useState({
         expenseID: '',
         expenseTitle: '',
@@ -36,11 +31,6 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
 
     useEffect(()=> {
         setModalVisibile(modalVisibility);
-
-        /* setExpenseID(id);
-        setExpenseTitle(title);
-        setExpensePrice(price);
-        setExpenseTime(timeVal); */
 
         inputChangeHandlerSection('expenseID', id);
         inputChangeHandlerSection('expenseTitle', title);
@@ -162,36 +152,6 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
                                 multiline: true,   
                             }} />
 
-                        {/* <Text style={{color:'white', marginStart:10, fontSize:16}}>Expense Title</Text>
-                        <TextInput 
-                            style={{backgroundColor:'white', margin:10, borderRadius:5}}
-                            onChangeText={(text)=> setExpenseTitle(text)}
-                            value={expenseTitle}
-                            placeholder="Expense title"
-                            maxLength={50} /> */}
-
-                        {/* <Text style={{color:'white', marginStart:10, fontSize:16}}>Price</Text>
-                        <TextInput 
-                            style={{backgroundColor:'white', margin:10, borderRadius:5}}
-                            onChangeText={(text)=> setExpensePrice(text)}
-                            value={expensePrice+""}
-                            placeholder="Expense Price"
-                            keyboardType="numeric"
-                            maxLength={15} /> */}
-
-                        {/* <Text style={{color:'white', marginStart:10, fontSize:16}}>Date</Text>
-                        <Pressable onPress={()=> setOpen(true)}>
-                            <View pointerEvents="none">
-                                <TextInput 
-                                    style={{backgroundColor:'white', margin:10, borderRadius:5}}
-                                    onChangeText={(text)=> setExpenseTime(text)}
-                                    value={expenseTime}
-                                    placeholder="Expense time"
-                                    keyboardType="default"
-                                    maxLength={15} />
-                            </View>
-                        </Pressable> */}
-
                         <DatePicker
                             modal
                             mode="date"
@@ -211,12 +171,11 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
                         </TouchableOpacity>
 
                     </View>
-
-                    
+    
                 </View>
-            
 
         </Modal>
     )
 
 }
+
