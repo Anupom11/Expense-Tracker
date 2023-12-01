@@ -153,18 +153,6 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
                                 }}
                             />
 
-                            <TextInputComponent
-                                label="Description"
-                                textInputConfig={{
-                                    keyboardType:"default",
-                                    placeholder:"Description",
-                                    onChangeText: inputChangeHandler.bind(this, 'expenseDesc'),
-                                    value: inputValue.expenseDesc,
-                                    maxLengthVal:50, 
-                                    numberOfLine: 4,
-                                    multiline: true,   
-                                }} />
-
                             <DescInputComponent
                                 label="Description"
                                 textInputConfig={{

@@ -10,14 +10,24 @@ import Moment from 'moment';
 
 import DatePicker from 'react-native-date-picker';
 
-export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, id, title, price, timeVal})=> {
+import {TextInputComponent, DescInputComponent } from '../src/component/FormComponents';
+
+export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, id, title, price, timeVal, desc})=> {
 
     const [modalVisible, setModalVisibile] = useState(true);
 
-    const [expenseID, setExpenseID]         = useState('');
+    /* const [expenseID, setExpenseID]         = useState('');
     const [expenseTitle, setExpenseTitle] = useState('');
     const [expensePrice, setExpensePrice] = useState();
-    const [expenseTime, setExpenseTime] = useState('');
+    const [expenseTime, setExpenseTime] = useState(''); */
+
+    const [inputValue, setInputvalue] = useState({
+        expenseID: '',
+        expenseTitle: '',
+        expensePrice: '',
+        expenseTime: '',
+        expenseDesc: '',
+    });
 
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
@@ -27,12 +37,27 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
     useEffect(()=> {
         setModalVisibile(modalVisibility);
 
-        setExpenseID(id);
+        /* setExpenseID(id);
         setExpenseTitle(title);
         setExpensePrice(price);
-        setExpenseTime(timeVal);
+        setExpenseTime(timeVal); */
+
+        inputChangeHandlerSection('expenseID', id);
+        inputChangeHandlerSection('expenseTitle', title);
+        inputChangeHandlerSection('expensePrice', price);
+        inputChangeHandlerSection('expenseTime', timeVal);
+        inputChangeHandlerSection('expenseDesc', desc);
 
     }, [false]);
+
+    const inputChangeHandlerSection=(inputIdentifier, value)=> {
+        setInputvalue((curInputvalues)=> {
+            return {
+                ...curInputvalues,
+                [inputIdentifier]: value,
+            }
+        });
+    }
 
     const HeaderSection=()=> {
         return (
@@ -50,15 +75,15 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
     }
 
     const updateExpenseData=()=> {
-        if(expenseTitle != '' && expensePrice != 0 && expenseTime != '') {
+        if(inputValue.expenseTitle != '' && inputValue.expensePrice != 0 && inputValue.expenseTime != '') {
 
-            const expenseFormattedVal = Moment(new Date(expenseTime)).format("YYYY-MM-DD");
+            const expenseFormattedVal = Moment(new Date(inputValue.expenseTime)).format("YYYY-MM-DD");
 
-            updateDataValue(expenseID, expenseTitle, expensePrice, expenseFormattedVal, response=> {
+            updateDataValue(inputValue.expenseID, inputValue.expenseTitle, inputValue.expensePrice, expenseFormattedVal, response=> {
                 alert(response);
             });
 
-            expensesCtx.updateExpenses(
+            /* expensesCtx.updateExpenses(
                 expenseID,
                 {
                     idVal:expenseID,
@@ -66,7 +91,7 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
                     price: expensePrice,
                     time: expenseFormattedVal 
                 }
-            );
+            ); */
 
             alert("Data saved successfully");
             
@@ -86,30 +111,75 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
             visible={modalVisible}
             onRequestClose={()=> {setModalVisibile(false); handleUpdateExpenseModal(false)}} >
 
-            
                 <View style={{backgroundColor:'black', flex:1}}>
 
                     <HeaderSection/>
                 
                     <View style={{marginTop:10}}>
-                        <Text style={{color:'white', marginStart:10, fontSize:16}}>Expense Title</Text>
+                        
+                        <TextInputComponent
+                            label="Expense Title"
+                            textInputConfig={{
+                                keyboardType:"default",
+                                placeholder:"Expense Title",
+                                onChangeText: inputChangeHandlerSection.bind(this, 'expenseTitle'),
+                                value: inputValue.expenseTitle
+                            }}  />
+
+                        <TextInputComponent
+                            label="Price"
+                            textInputConfig={{
+                                keyboardType: 'numeric',
+                                placeholder: "Expense Price",
+                                onChangeText: inputChangeHandlerSection.bind(this, 'expensePrice'),
+                                value: inputValue.expensePrice.toString(),
+                                maxLength:15,
+                            }}  />
+
+                        <Pressable onPress={()=> setOpen(true)}>
+                            <View pointerEvents="none">
+                                <TextInputComponent
+                                    label="Date"
+                                    textInputConfig={{
+                                        keyboardType: 'default',
+                                        placeholder: "Expense time",
+                                        maxLength:15,
+                                        value: inputValue.expenseTime,
+                                        onChangeText: inputChangeHandlerSection.bind(this, 'expenseTime'),
+                                    }}  />
+                            </View>
+                        </Pressable>
+
+                        <DescInputComponent
+                            label="Description"
+                            textInputConfig={{
+                                keyboardType:"default",
+                                placeholder:"Description",
+                                onChangeText: inputChangeHandlerSection.bind(this, 'expenseDesc'),
+                                value: inputValue.expenseDesc,
+                                maxLengthVal:50, 
+                                numberOfLine: 4,
+                                multiline: true,   
+                            }} />
+
+                        {/* <Text style={{color:'white', marginStart:10, fontSize:16}}>Expense Title</Text>
                         <TextInput 
                             style={{backgroundColor:'white', margin:10, borderRadius:5}}
                             onChangeText={(text)=> setExpenseTitle(text)}
                             value={expenseTitle}
                             placeholder="Expense title"
-                            maxLength={50} />
+                            maxLength={50} /> */}
 
-                        <Text style={{color:'white', marginStart:10, fontSize:16}}>Price</Text>
+                        {/* <Text style={{color:'white', marginStart:10, fontSize:16}}>Price</Text>
                         <TextInput 
                             style={{backgroundColor:'white', margin:10, borderRadius:5}}
                             onChangeText={(text)=> setExpensePrice(text)}
                             value={expensePrice+""}
                             placeholder="Expense Price"
                             keyboardType="numeric"
-                            maxLength={15} />
+                            maxLength={15} /> */}
 
-                        <Text style={{color:'white', marginStart:10, fontSize:16}}>Date</Text>
+                        {/* <Text style={{color:'white', marginStart:10, fontSize:16}}>Date</Text>
                         <Pressable onPress={()=> setOpen(true)}>
                             <View pointerEvents="none">
                                 <TextInput 
@@ -120,7 +190,7 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
                                     keyboardType="default"
                                     maxLength={15} />
                             </View>
-                        </Pressable>
+                        </Pressable> */}
 
                         <DatePicker
                             modal
@@ -128,8 +198,8 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
                             open={open}
                             date={date}
                             onConfirm={(date) => {
-                                setOpen(false) 
-                                setExpenseTime(date+"")
+                                setOpen(false); 
+                                inputChangeHandlerSection('expenseTime', date.toString());
                             }}
                             onCancel={() => {
                                 setOpen(false)
