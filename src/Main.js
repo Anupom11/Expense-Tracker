@@ -32,9 +32,10 @@ export default Main=()=> {
     const [updateExpenseModal, setUpdateExpenseModal] = useState(false);
 
     const [selectedExpenseID, setSelectedExpenseID]         = useState('');
-    const [selectedExpenseTitle, setSelectedExpenseTitle] = useState('');
-    const [selectedExpensePrice, setSelectedExpensePrice] = useState();
-    const [selectedExpenseTime, setSelectedExpenseTime] = useState('');
+    const [selectedExpenseTitle, setSelectedExpenseTitle]   = useState('');
+    const [selectedExpensePrice, setSelectedExpensePrice]   = useState();
+    const [selectedExpenseTime, setSelectedExpenseTime]     = useState('');
+    const [selectedExpenseDesc, setSelectedExpenseDesc]     = useState('');
 
     //const expensesCtx = useContext(ExpensesContext);
     //const DATA = expensesCtx.expenses;
@@ -47,6 +48,7 @@ export default Main=()=> {
         //<<<--------------------------->>>
         // get the data value
         getDataValue(response=> {
+            console.log("Res::"+JSON.stringify(response));
             setDATA(response); 
             calcTotalExpense(response);
         });
@@ -68,7 +70,7 @@ export default Main=()=> {
 
                             <FlatList
                                 data={DATA}
-                                renderItem={({item}) => <ExpenseDtlSection id={item.id} title={item.title} price={item.price} time={item.time}/> }
+                                renderItem={({item}) => <ExpenseDtlSection id={item.id} title={item.title} price={item.price} time={item.time} desc={item.desc}/> }
                                 keyExtractor={item => item.id}
                             />
                         </View>
@@ -84,10 +86,10 @@ export default Main=()=> {
         )
     }
 
-    const ExpenseDtlSection=({id, title, price, time})=> { 
+    const ExpenseDtlSection=({id, title, price, time, desc})=> { 
         return (            
             <TouchableOpacity 
-                onPress={()=> handleUpdateExpenseModal(true, id, title, price, time)}
+                onPress={()=> handleUpdateExpenseModal(true, id, title, price, time, desc)}
                 onLongPress={()=> handleDeleteOperation(id)}>
                 <View style={{flexDirection:'row', justifyContent:'space-between', borderRadius:10, borderColor:'white', borderWidth:1, margin:10, padding: 10, backgroundColor:'black', height:80,  }}>
                     <View style={{backgroundColor:'black', alignSelf:'center' }}>
@@ -109,13 +111,14 @@ export default Main=()=> {
         refreshData();
     }
 
-    const handleUpdateExpenseModal=(flag, id, title, price, time)=> {
+    const handleUpdateExpenseModal=(flag, id, title, price, time, desc)=> {
         setUpdateExpenseModal(flag);
 
         setSelectedExpenseID(id);
         setSelectedExpenseTitle(title);
         setSelectedExpensePrice(price);
         setSelectedExpenseTime(time);
+        setSelectedExpenseDesc(desc);
 
         // refresh the expense list
         refreshData();
@@ -197,7 +200,8 @@ export default Main=()=> {
                         id={selectedExpenseID}
                         title={selectedExpenseTitle} 
                         price={selectedExpensePrice} 
-                        timeVal={selectedExpenseTime} /> 
+                        timeVal={selectedExpenseTime}
+                        desc = {selectedExpenseDesc} /> 
                 : null
             }
 

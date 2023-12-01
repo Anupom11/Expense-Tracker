@@ -13,11 +13,11 @@ SQLite.enablePromise(true);
 SQLite.enablePromise(false);
 //===================================
 
-export const saveDataValue=(expenseTitle, expensePrice, expenseTime, callback)=> {
+export const saveDataValue=(expenseTitle, expensePrice, expenseTime, expenseDesc, callback)=> {
     db.transaction(tx=> {
         tx.executeSql(
-            "insert into ExpenseData(title, price, time) values(?,?,?)", 
-            [expenseTitle, expensePrice, expenseTime], 
+            "insert into ExpenseData(title, price, time, desc) values(?,?,?,?)", 
+            [expenseTitle, expensePrice, expenseTime, expenseDesc], 
             (tx, results)=> {
                 if(results.rowsAffected > 0) {
                     let msg = results.rowsAffected+" no of data inserted";
@@ -35,10 +35,10 @@ export const saveDataValue=(expenseTitle, expensePrice, expenseTime, callback)=>
     });
 }
 
-export const updateDataValue=(expenseID, expenseTitle, expensePrice, expenseTime, callback)=> {
+export const updateDataValue=(expenseID, expenseTitle, expensePrice, expenseTime, expenseDesc, callback)=> {
     db.transaction(tx=> {
         tx.executeSql(
-            "update ExpenseData set title='"+expenseTitle+"', price='"+expensePrice+"', time='"+expenseTime+"' where id='"+expenseID+"' ",
+            "update ExpenseData set title='"+expenseTitle+"', price='"+expensePrice+"', time='"+expenseTime+"', desc='"+expenseDesc+"' where id='"+expenseID+"' ",
             [],
             (tx, results)=> {
                 if(results.rowsAffected > 0) {

@@ -69,7 +69,7 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
 
             const expenseFormattedVal = Moment(new Date(inputValue.expenseTime)).format("YYYY-MM-DD");
 
-            updateDataValue(inputValue.expenseID, inputValue.expenseTitle, inputValue.expensePrice, expenseFormattedVal, response=> {
+            updateDataValue(inputValue.expenseID, inputValue.expenseTitle, inputValue.expensePrice, expenseFormattedVal, inputValue.expenseDesc, response=> {
                 alert(response);
             });
 
