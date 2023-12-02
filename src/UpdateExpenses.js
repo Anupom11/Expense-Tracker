@@ -103,14 +103,20 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
         else {
             if(inputValue.expenseTitle.trim() === '') {
                 setExpenseTitleValid(false);
+            } else {
+                setExpenseTitleValid(true);
             }
 
             if(inputValue.expensePrice.trim() === '') {
                 setExpensePriceValid(false);
+            } else {
+                setExpensePriceValid(true);
             }
 
             if(inputValue.expenseTime.trim() === '') {
                 setExpenseTimeValid(false);
+            } else {
+                setExpenseTimeValid(true);
             }
 
             alert('Please add the data!');

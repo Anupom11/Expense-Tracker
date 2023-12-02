@@ -98,13 +98,25 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
 
         }
         else {
-            //-------------------------------------------------------------------------
-            if(inputValue.expenseTitle.trim() === '') { setExpTitleValid(false);  }
+            //-----------------------------------------------
+            if(inputValue.expenseTitle.trim() === '') { 
+                setExpTitleValid(false);  
+            } else {
+                setExpTitleValid(true);
+            }
             
-            if(inputValue.expensePrice.trim() === '') {   setExpPriceValid(false); }
+            if(inputValue.expensePrice.trim() === '') {   
+                setExpPriceValid(false); 
+            } else {
+                setExpPriceValid(true);
+            }
 
-            if(inputValue.expenseTime.trim() === '') {  setExpTimeValid(false);  }
-            //------------------------------------------------------------------------
+            if(inputValue.expenseTime.trim() === '') {
+                setExpTimeValid(false);  
+            } else {
+                setExpTimeValid(true);
+            }
+            //-------------------------------------------------
 
             alert('Please add the data!');
         }
