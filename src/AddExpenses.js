@@ -27,6 +27,13 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
     });
     //---------------------------------------------------
 
+    //---------------------------------------------------------
+    const [expTitleValid, setExpTitleValid] = useState(true);
+    const [expPriceValid, setExpPriceValid] = useState(true);
+    const [expTimeValid, setExpTimeValid]   = useState(true);
+    const [expDescValid, setExpDescValid]   = useState(true);
+    //---------------------------------------------------------
+
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
 
@@ -63,11 +70,17 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
 
     const addExpenseData=()=> {
 
-        if(inputValue.expenseTitle != '' && inputValue.expensePrice != 0 && inputValue.expenseTime != '') {
+        if(inputValue.expenseTitle != '' && inputValue.expensePrice != '' && inputValue.expenseTime != '') {
+
+            //-------------------------
+            setExpTitleValid(true);
+            setExpPriceValid(true);
+            setExpTimeValid(true);
+            //-------------------------
 
             const expenseFormattedVal = Moment(new Date(inputValue.expenseTime)).format("YYYY-MM-DD"); 
 
-            saveDataValue(inputValue.expenseTitle, inputValue.expensePrice, expenseFormattedVal, response=> {
+            saveDataValue(inputValue.expenseTitle, inputValue.expensePrice, expenseFormattedVal, inputValue.expenseDesc, response=> {
                 alert(response);
             });
             
@@ -85,6 +98,14 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
 
         }
         else {
+            //-------------------------------------------------------------------------
+            if(inputValue.expenseTitle.trim() === '') { setExpTitleValid(false);  }
+            
+            if(inputValue.expensePrice.trim() === '') {   setExpPriceValid(false); }
+
+            if(inputValue.expenseTime.trim() === '') {  setExpTimeValid(false);  }
+            //------------------------------------------------------------------------
+
             alert('Please add the data!');
         }
         
@@ -109,32 +130,35 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
                         
                             <TextInputComponent
                                 label="Expense Title"
+                                invalid= {expTitleValid}
                                 textInputConfig={{
                                     keyboardType:"default",
                                     placeholder:"Expense Title",
                                     onChangeText: inputChangeHandler.bind(this, 'expenseTitle'),
-                                    value: inputValue.expenseTitle
+                                    value: inputValue.expenseTitle,
                                 }}
                             />
 
                             <TextInputComponent
                                 label="Expense Price"
+                                invalid= {expPriceValid}
                                 textInputConfig={{
                                     keyboardType: "numeric",
                                     placeholder: "Expense Price",
                                     onChangeText: inputChangeHandler.bind(this, 'expensePrice'),
-                                    value: inputValue.expensePrice.toString()
+                                    value: inputValue.expensePrice.toString(),
                                 }}  />
 
                             <Pressable onPress={()=> setOpen(true)}>
                                 <View pointerEvents="none">
                                     <TextInputComponent
                                         label="Date"
+                                        invalid= {expTimeValid}
                                         textInputConfig={{
                                             keyboardType: "default",
                                             placeholder: "Expense Date",
                                             onChangeText: inputChangeHandler.bind(this, 'expenseTime'), 
-                                            value: inputValue.expenseTime
+                                            value: inputValue.expenseTime,
                                         }}  />
                                 </View>
                             </Pressable>

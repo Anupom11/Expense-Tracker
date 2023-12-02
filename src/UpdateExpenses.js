@@ -24,6 +24,12 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
         expenseDesc: '',
     });
 
+    //-----------------------------------------------------------------
+    const [expenseTitleValid, setExpenseTitleValid] = useState(true);
+    const [expensePriceValid, setExpensePriceValid] = useState(true);
+    const [expenseTimeValid, setExpenseTimeValid]   = useState(true);
+    //-----------------------------------------------------------------
+
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
 
@@ -65,7 +71,13 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
     }
 
     const updateExpenseData=()=> {
-        if(inputValue.expenseTitle != '' && inputValue.expensePrice != 0 && inputValue.expenseTime != '') {
+        if(inputValue.expenseTitle.trim() != '' && inputValue.expensePrice.trim() != '' && inputValue.expenseTime.trim() != '') {
+
+            //---------------------------------
+            setExpenseTitleValid(true);
+            setExpensePriceValid(true);
+            setExpenseTimeValid(true);
+            //---------------------------------
 
             const expenseFormattedVal = Moment(new Date(inputValue.expenseTime)).format("YYYY-MM-DD");
 
@@ -89,6 +101,18 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
             handleUpdateExpenseModal(false)
         }
         else {
+            if(inputValue.expenseTitle.trim() === '') {
+                setExpenseTitleValid(false);
+            }
+
+            if(inputValue.expensePrice.trim() === '') {
+                setExpensePriceValid(false);
+            }
+
+            if(inputValue.expenseTime.trim() === '') {
+                setExpenseTimeValid(false);
+            }
+
             alert('Please add the data!');
         }
         
@@ -109,6 +133,7 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
                         
                         <TextInputComponent
                             label="Expense Title"
+                            invalid={expenseTitleValid}
                             textInputConfig={{
                                 keyboardType:"default",
                                 placeholder:"Expense Title",
@@ -118,6 +143,7 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
 
                         <TextInputComponent
                             label="Price"
+                            invalid={expensePriceValid}
                             textInputConfig={{
                                 keyboardType: 'numeric',
                                 placeholder: "Expense Price",
@@ -130,6 +156,7 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
                             <View pointerEvents="none">
                                 <TextInputComponent
                                     label="Date"
+                                    invalid={expenseTimeValid}
                                     textInputConfig={{
                                         keyboardType: 'default',
                                         placeholder: "Expense time",
