@@ -37,6 +37,8 @@ export default Main=()=> {
     const [selectedExpenseTime, setSelectedExpenseTime]     = useState('');
     const [selectedExpenseDesc, setSelectedExpenseDesc]     = useState('');
 
+    const [isRefreshing, setisRefreshing] = useState(false);
+
     //const expensesCtx = useContext(ExpensesContext);
     //const DATA = expensesCtx.expenses;
 
@@ -60,7 +62,12 @@ export default Main=()=> {
 
     // method to get the list of expense details
     const getExpenseData=()=> {
+        
+        setisRefreshing(true);
+
         getDataValue(response=> {
+            setisRefreshing(false);
+
             setDATA(response); 
             calcTotalExpense(response);
         });
@@ -79,7 +86,7 @@ export default Main=()=> {
                             </View>
 
                             <FlatList
-                                refreshControl={<RefreshControl refreshing={false} onRefresh={()=> getExpenseData() } /> }
+                                refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={()=> getExpenseData() } /> }
                                 data={DATA}
                                 renderItem={({item}) => <ExpenseDtlSection id={item.id} title={item.title} price={item.price} time={item.time} desc={item.desc}/> }
                                 keyExtractor={item => item.id}
