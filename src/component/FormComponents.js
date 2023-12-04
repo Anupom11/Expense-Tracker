@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         borderRadius:5
     },
     textInputErrorStyle: {
-        backgroundColor: '#ffe7e6',
+        backgroundColor: '#fcc4e4',
     },
     descStyle: {
         margin:10,

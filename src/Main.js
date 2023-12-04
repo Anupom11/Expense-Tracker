@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from "react";
-import {Text, Button, TextInput, View, Alert, TouchableOpacity, StatusBar, FlatList } from "react-native";
+import {Text, Button, TextInput, View, Alert, TouchableOpacity, StatusBar, FlatList, RefreshControl } from "react-native";
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import UpdateExpensesModal from "./UpdateExpenses";
@@ -47,14 +47,24 @@ export default Main=()=> {
         
         //<<<--------------------------->>>
         // get the data value
-        getDataValue(response=> {
-            console.log("Res::"+JSON.stringify(response));
+       /*  getDataValue(response=> {
             setDATA(response); 
             calcTotalExpense(response);
-        });
+        }); */
+
+        getExpenseData();
+
         //<<<--------------------------->>>
 
     }, []);
+
+    // method to get the list of expense details
+    const getExpenseData=()=> {
+        getDataValue(response=> {
+            setDATA(response); 
+            calcTotalExpense(response);
+        });
+    }
 
     const ExpenseBodySection=()=> { 
         return (
@@ -69,6 +79,7 @@ export default Main=()=> {
                             </View>
 
                             <FlatList
+                                refreshControl={<RefreshControl refreshing={false} onRefresh={()=> getExpenseData() } /> }
                                 data={DATA}
                                 renderItem={({item}) => <ExpenseDtlSection id={item.id} title={item.title} price={item.price} time={item.time} desc={item.desc}/> }
                                 keyExtractor={item => item.id}
