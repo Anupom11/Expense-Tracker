@@ -10,6 +10,8 @@ import { getDataValue, deleteDataValue } from "./store/sqlite_storage";
 
 import {ExpensesContext} from "./store/Expenses-context";
 
+import { FetchExpenseData } from "./component/ServerRequest";
+
 const HeaderSection=({handleAddExpenseModal})=> {
     return (
         <>
@@ -57,6 +59,15 @@ export default Main=()=> {
         getExpenseData();
 
         //<<<--------------------------->>>
+
+        //--------------------------------------
+        // method to get the data from firebase
+        async function getExpenseDataSet() {
+            await FetchExpenseData();
+        }
+        
+        getExpenseDataSet();
+        //--------------------------------------
 
     }, []);
 

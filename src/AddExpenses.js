@@ -14,6 +14,8 @@ import DatePicker from 'react-native-date-picker';
 
 import { TextInputComponent, DescInputComponent, TextInputComponent1 } from "./component/FormComponents";
 
+import { StoreExpenseData } from "./component/ServerRequest";
+
 export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
 
     const [modalVisible, setModalVisibile] = useState(true);
@@ -84,6 +86,18 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
                 alert(response);
             });
             
+            //-----------------------------------------
+            // method to save data on firebase
+            const expenseDataSet = {
+                title: inputValue.expenseTitle,
+                price: inputValue.expensePrice,
+                desc: inputValue.expenseDesc
+            };
+
+            StoreExpenseData(expenseDataSet);
+            //-----------------------------------------
+
+
             /* expensesCtx.addExpenses({
                 id:new Date().toString + Math.random.toString(),
                 title: expenseTitle,
