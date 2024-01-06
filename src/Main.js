@@ -11,17 +11,23 @@ import { getDataValue, deleteDataValue } from "./store/sqlite_storage";
 import {ExpensesContext} from "./store/Expenses-context";
 
 import { FetchExpenseData } from "./component/ServerRequest";
+import ShowFirebaseExpenses from "./ShowFirebaseExpenses";
 
-const HeaderSection=({handleAddExpenseModal})=> {
+const HeaderSection=({handleAddExpenseModal, handleShowFirebaseExpenseModal})=> {
     return (
         <>
             <View style={{flexDirection:'row', backgroundColor:'#1a1919', height:50, justifyContent:'space-between'}}>
                 <Text style={{color:'white', alignSelf:'center', fontSize:18, margin:5, fontWeight:'normal'}}>Expense Tracker</Text>
                 
-                <TouchableOpacity style={{alignSelf:'center', alignContent:'flex-end', marginEnd:10 }} onPress={()=> handleAddExpenseModal(true)}>
-                    <Icon name='plus' size={30} color="#ffffff" />
-                </TouchableOpacity>
+                <View style={{alignContent:'flex-end', alignSelf:'center', flexDirection:'row'}}>
+                    <TouchableOpacity style={{alignSelf:'center',  margin: 10}} onPress={()=> handleShowFirebaseExpenseModal(true)}>
+                        <Icon name='fire' text="Firebase" size={30} color="#ffffff" />
+                    </TouchableOpacity>
 
+                    <TouchableOpacity style={{alignSelf:'center', marginStart:15, marginEnd:15 }} onPress={()=> handleAddExpenseModal(true)}>
+                        <Icon name='plus' size={30} color="#ffffff" />
+                    </TouchableOpacity>
+                </View>
                 
             </View>
         </>
@@ -32,6 +38,8 @@ export default Main=()=> {
 
     const [addExpenseModal, setAddExpenseModal] = useState(false);
     const [updateExpenseModal, setUpdateExpenseModal] = useState(false);
+
+    const [showFirebaseModal, setShowFirebaseModal] = useState(false);
 
     const [selectedExpenseID, setSelectedExpenseID]         = useState('');
     const [selectedExpenseTitle, setSelectedExpenseTitle]   = useState('');
@@ -60,14 +68,15 @@ export default Main=()=> {
 
         //<<<--------------------------->>>
 
-        //--------------------------------------
+        //--------------------------------------------------------
         // method to get the data from firebase
-        async function getExpenseDataSet() {
-            await FetchExpenseData();
+        async function getExpenseDataSet() {            
+            const dataset = await FetchExpenseData(); 
+            console.log("Data1::"+JSON.stringify(dataset));
         }
         
-        getExpenseDataSet();
-        //--------------------------------------
+        getExpenseDataSet();    // call the method
+        //--------------------------------------------------------
 
     }, []);
 
@@ -140,6 +149,10 @@ export default Main=()=> {
         refreshData();
     }
 
+    const handleShowFirebaseExpenseModal=(flag)=> {
+        setShowFirebaseModal(flag);
+    }
+
     const handleUpdateExpenseModal=(flag, id, title, price, time, desc)=> {
         setUpdateExpenseModal(flag);
 
@@ -204,7 +217,7 @@ export default Main=()=> {
 
             {
                 //headerSection()
-                <HeaderSection handleAddExpenseModal={handleAddExpenseModal}/>
+                <HeaderSection handleAddExpenseModal={handleAddExpenseModal} handleShowFirebaseExpenseModal={handleShowFirebaseExpenseModal}/>
             }
 
             <View style={{backgroundColor:'black', flex:1}}>
@@ -218,6 +231,14 @@ export default Main=()=> {
                     <AddExpenseModal
                         modalVisibility={addExpenseModal}
                         handleAddExpenseModal = {handleAddExpenseModal}  />
+                : null
+            }
+
+            {
+                showFirebaseModal ?
+                    <ShowFirebaseExpenses
+                        modalVisibility={showFirebaseModal}
+                        handleShowFirebaseModal={handleShowFirebaseExpenseModal}    />
                 : null
             }
 

@@ -18,22 +18,49 @@ export function StoreExpenseData(expenseData) {
 
 export async function FetchExpenseData() { 
     
-    axios.get(firebaseLink)
+    /* await axios.get(firebaseLink)
     .then(function(response) {
         //console.log("Res::"+JSON.stringify(response.data));
 
-        for(const key in response.data) {
-            console.log("Key::"+key);
-            console.log("Data::"+JSON.stringify(response.data[key]));
-        }
+        let expenseDataSet = [];
+
+        for(const key in response.data) { 
+            const expenseData = {
+                id: key,
+                title: response.data[key].title,
+                price: response.data[key].price,
+                desc: response.data[key].desc
+            };
+
+            expenseDataSet.push(expenseData);
+        } 
+
+        return expenseDataSet; 
 
     })
     .catch(function(error) {
         console.log("Error::"+error);
-    })
-    .finally(function() {
-        console.log("Finally section");
-    });
+        return [];
+    }); */
+
+    const response = await axios.get(firebaseLink);
+
+    const expenseData = [];
+
+    for(const key in response.data) {
+        const expenseDataObj = {
+            id: key,
+            title: response.data[key].title,
+            price: response.data[key].price,
+            desc: response.data[key].desc
+        };
+
+        expenseData.push(expenseDataObj);
+
+    }
+
+    return expenseData;
+
 }
 
 
