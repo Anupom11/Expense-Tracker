@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { FetchExpenseData } from "./component/ServerRequest";
 
-export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseModal})=> {
+export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseModal, handleFirebaseUpdateOp})=> {
 
     const [modalVisible, setModalVisibile] = useState(true);
 
@@ -15,7 +15,7 @@ export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseMod
     useEffect(()=> {
         setModalVisibile(modalVisibility);
 
-        getExpenseDataSet();    // call the method
+        getExpenseDataSet();    // call the method to get expense data from firebase
 
     }, [false]);
 
@@ -49,7 +49,6 @@ export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseMod
                 {
                     DATA.length > 0 ?
                         <View>
-                            
                             <FlatList
                                 //refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={()=> getExpenseData() } /> }
                                 data={DATA}
@@ -62,16 +61,23 @@ export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseMod
                             <Text style={{color:'white'}}>No expense data present!</Text>
                         </View>
                 }
-
-                
-    
             </View>
         )
     }
 
+    const handleExpDtlUpdateOp=({id, title, price, time, desc})=> {
+
+        // hide the modal
+        setModalVisibile(false);
+        handleShowFirebaseModal(false);
+
+        handleFirebaseUpdateOp({id, title, price, time, desc});
+
+    }
+
     const ExpenseDtlSection=({id, title, price, time, desc})=> { 
         return (            
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=> handleExpDtlUpdateOp({id, title, price, time, desc}) }>
                 <View style={{flexDirection:'row', justifyContent:'space-between', borderRadius:10, borderColor:'white', borderWidth:1, margin:10, padding: 10, backgroundColor:'black', height:80,  }}>
                     <View style={{backgroundColor:'black', alignSelf:'center' }}>
                         <Text style={{alignSelf:'flex-start', maxWidth:250, maxHeight:30, fontWeight:'bold', fontSize:20, color:'white'}}>{title}</Text>

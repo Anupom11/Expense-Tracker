@@ -36,10 +36,10 @@ const HeaderSection=({handleAddExpenseModal, handleShowFirebaseExpenseModal})=> 
 
 export default Main=()=> {
 
-    const [addExpenseModal, setAddExpenseModal] = useState(false);
-    const [updateExpenseModal, setUpdateExpenseModal] = useState(false);
+    const [addExpenseModal, setAddExpenseModal]             = useState(false);
+    const [updateExpenseModal, setUpdateExpenseModal]       = useState(false);
 
-    const [showFirebaseModal, setShowFirebaseModal] = useState(false);
+    const [showFirebaseModal, setShowFirebaseModal]         = useState(false);
 
     const [selectedExpenseID, setSelectedExpenseID]         = useState('');
     const [selectedExpenseTitle, setSelectedExpenseTitle]   = useState('');
@@ -208,6 +208,11 @@ export default Main=()=> {
         
     }
 
+    // method to handle the update for the firebase
+    const handleFirebaseUpdateOp=({id, title, price, time, desc})=> {
+        handleUpdateExpenseModal(true, id, title, price, time, desc);
+    }
+
     return (
         <>
             <StatusBar
@@ -238,7 +243,8 @@ export default Main=()=> {
                 showFirebaseModal ?
                     <ShowFirebaseExpenses
                         modalVisibility={showFirebaseModal}
-                        handleShowFirebaseModal={handleShowFirebaseExpenseModal}    />
+                        handleShowFirebaseModal={handleShowFirebaseExpenseModal}
+                        handleFirebaseUpdateOp= {handleFirebaseUpdateOp}    />
                 : null
             }
 
