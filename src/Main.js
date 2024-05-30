@@ -13,6 +13,8 @@ import {ExpensesContext} from "./store/Expenses-context";
 import { FetchExpenseData } from "./component/ServerRequest";
 import ShowFirebaseExpenses from "./ShowFirebaseExpenses";
 
+import LoadingOverlay from "./component/LoadingOverlay";
+
 const HeaderSection=({handleAddExpenseModal, handleShowFirebaseExpenseModal})=> {
     return (
         <>
@@ -52,6 +54,8 @@ export default Main=()=> {
 
     const [isRefreshing, setisRefreshing] = useState(false);
 
+    const [isFetchingData, setIsFetchingData] = useState(true);
+
     //const expensesCtx = useContext(ExpensesContext);
     //const DATA = expensesCtx.expenses;
 
@@ -89,8 +93,10 @@ export default Main=()=> {
         setisRefreshing(true);
 
         getDataValue(response=> {
-            console.log("Data:"+JSON.stringify(response));
+            //console.log("Data:"+JSON.stringify(response));
             setisRefreshing(false);
+
+            setIsFetchingData(false);
 
             setDATA(response); 
             calcTotalExpense(response);
@@ -242,6 +248,13 @@ export default Main=()=> {
             {
                 //headerSection()
                 <HeaderSection handleAddExpenseModal={handleAddExpenseModal} handleShowFirebaseExpenseModal={handleShowFirebaseExpenseModal}/>
+            }
+
+            {
+                isFetchingData ? 
+                    <LoadingOverlay/>
+                :
+                    null
             }
 
             <View style={{backgroundColor:'black', flex:1}}>

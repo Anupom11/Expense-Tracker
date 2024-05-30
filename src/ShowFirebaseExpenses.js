@@ -6,7 +6,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { FetchExpenseData, deleteFirebaseExpData } from "./component/ServerRequest";
 
+import LoadingOverlay from "./component/LoadingOverlay";
+
 export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseModal, addFirebaseDataOpFlag, handleFirebaseUpdateOp})=> {
+
+    const [isFetchingData, setIsFetchingData] = useState(true);
 
     const [modalVisible, setModalVisibile] = useState(true);
 
@@ -45,6 +49,7 @@ export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseMod
     async function getExpenseDataSet() {            
         const dataset = await FetchExpenseData(); 
         setDATA(dataset);
+        setIsFetchingData(false);
         //console.log("Data1::"+JSON.stringify(dataset));
     }
     //--------------------------------------------------------
@@ -121,6 +126,13 @@ export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseMod
 
                 <HeaderSection/>
 
+                {
+                    isFetchingData ? 
+                        <LoadingOverlay/>
+                    : 
+                        null
+                }
+                
                 <View style={{backgroundColor:'black', flex:1}}>
                 {
                     ExpenseFirebaseDataSet()
