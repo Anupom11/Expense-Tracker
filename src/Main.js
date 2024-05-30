@@ -39,6 +39,9 @@ export default Main=()=> {
     const [addExpenseModal, setAddExpenseModal]             = useState(false);
     const [updateExpenseModal, setUpdateExpenseModal]       = useState(false);
 
+    const [addDataOnFirebase, setAddDataOnFirebase]         = useState(false);     //<--- whether firebase or local DB data add operation
+    const [updateFirebaseMode, setUpdateFirebaseMode]       = useState(false);     //<--- whether firebase or local DB update operation
+
     const [showFirebaseModal, setShowFirebaseModal]         = useState(false);
 
     const [selectedExpenseID, setSelectedExpenseID]         = useState('');
@@ -70,12 +73,12 @@ export default Main=()=> {
 
         //--------------------------------------------------------
         // method to get the data from firebase
-        async function getExpenseDataSet() {            
+        /* async function getExpenseDataSet() {            
             const dataset = await FetchExpenseData(); 
             console.log("Data1::"+JSON.stringify(dataset));
         }
         
-        getExpenseDataSet();    // call the method
+        getExpenseDataSet(); */    // call the method
         //--------------------------------------------------------
 
     }, []);
@@ -86,6 +89,7 @@ export default Main=()=> {
         setisRefreshing(true);
 
         getDataValue(response=> {
+            console.log("Data:"+JSON.stringify(response));
             setisRefreshing(false);
 
             setDATA(response); 
@@ -145,6 +149,8 @@ export default Main=()=> {
     const handleAddExpenseModal=(flag)=> {
         setAddExpenseModal(flag);
 
+        setAddDataOnFirebase(false);
+
         // refresh the expense list
         refreshData();
     }
@@ -155,6 +161,8 @@ export default Main=()=> {
 
     const handleUpdateExpenseModal=(flag, id, title, price, time, desc)=> {
         setUpdateExpenseModal(flag);
+
+        setUpdateFirebaseMode(false);
 
         setSelectedExpenseID(id);
         setSelectedExpenseTitle(title);
@@ -208,9 +216,20 @@ export default Main=()=> {
         
     }
 
+    // method to handle the add operation for the firebase
+    const addFirebaseDataOpFlag=(flag)=> {  
+        setAddDataOnFirebase(flag);         //<--- set the firebase data add operation
+
+        setAddExpenseModal(flag);           //<--- flag on the data add modal
+    }
+
     // method to handle the update for the firebase
     const handleFirebaseUpdateOp=({id, title, price, time, desc})=> {
+        
         handleUpdateExpenseModal(true, id, title, price, time, desc);
+
+        // set the firebase data update op flag 
+        setUpdateFirebaseMode(true)
     }
 
     return (
@@ -235,7 +254,8 @@ export default Main=()=> {
                 addExpenseModal ?
                     <AddExpenseModal
                         modalVisibility={addExpenseModal}
-                        handleAddExpenseModal = {handleAddExpenseModal}  />
+                        handleAddExpenseModal = {handleAddExpenseModal}
+                        addFirebaseDataMode= {addDataOnFirebase}  />
                 : null
             }
 
@@ -244,6 +264,7 @@ export default Main=()=> {
                     <ShowFirebaseExpenses
                         modalVisibility={showFirebaseModal}
                         handleShowFirebaseModal={handleShowFirebaseExpenseModal}
+                        addFirebaseDataOpFlag= {addFirebaseDataOpFlag}
                         handleFirebaseUpdateOp= {handleFirebaseUpdateOp}    />
                 : null
             }
@@ -253,6 +274,7 @@ export default Main=()=> {
                     <UpdateExpensesModal 
                         modalVisibility={updateExpenseModal} 
                         handleUpdateExpenseModal={handleUpdateExpenseModal}
+                        updateMode={updateFirebaseMode}
                         id={selectedExpenseID}
                         title={selectedExpenseTitle} 
                         price={selectedExpensePrice} 

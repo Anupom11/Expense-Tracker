@@ -16,9 +16,11 @@ import { TextInputComponent, DescInputComponent, TextInputComponent1 } from "./c
 
 import { StoreExpenseData } from "./component/ServerRequest";
 
-export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
+export default AddExpenseModal=({modalVisibility, handleAddExpenseModal, addFirebaseDataMode})=> {
 
     const [modalVisible, setModalVisibile] = useState(true);
+
+    const [addFirebaseDataModeVal, setAddFirebaseDataModeVal] = useState(false);      //<--- state variable for firebase data add operation
 
     //---------------------------------------------------
     const [inputValue, setInputValue] = useState({
@@ -43,6 +45,9 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
 
     useEffect(()=> {
         setModalVisibile(modalVisibility);
+
+        setAddFirebaseDataModeVal(addFirebaseDataMode);
+
     }, [false]);
 
     const inputChangeHandler=(inputIndentifier, enteredValue)=> { 
@@ -59,7 +64,16 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
         return (
             <>
                 <View style={{flexDirection:'row', backgroundColor:'#1a1919', height:50, justifyContent:'space-between'}}>
-                    <Text style={{color:'white', alignSelf:'center', fontSize:18, margin:5, fontWeight:'normal'}}>Add Expense</Text>
+
+                    <View style={{flexDirection:'row'}}>
+                        <Text style={{color:'white', alignSelf:'center', fontSize:18, margin:5, fontWeight:'normal'}}>Add Expense</Text>
+                        {
+                            addFirebaseDataModeVal ? 
+                                <Text style={{color:'red', alignSelf:'center', fontSize:18, margin:5, fontWeight:'normal'}}>(Firebase)</Text>
+                            :
+                                null
+                        }
+                    </View>
                     
                     <TouchableOpacity style={{alignSelf:'center', alignContent:'flex-end', marginEnd:10 }} onPress={()=> handleAddExpenseModal(false)}>
                         <Icon name='close' size={30} color="#ffffff" />
@@ -82,22 +96,25 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal})=> {
 
             const expenseFormattedVal = Moment(new Date(inputValue.expenseTime)).format("YYYY-MM-DD"); 
 
-            saveDataValue(inputValue.expenseTitle, inputValue.expensePrice, expenseFormattedVal, inputValue.expenseDesc, response=> {
-                alert(response);
-            });
+            if(!addFirebaseDataModeVal) {
+                saveDataValue(inputValue.expenseTitle, inputValue.expensePrice, expenseFormattedVal, inputValue.expenseDesc, response=> {
+                    alert(response);
+                });
+            }
+            else {
+                //-----------------------------------------
+                // method to save data on firebase
+                const expenseDataSet = {
+                    expenseTitle: inputValue.expenseTitle,
+                    expensePrice: inputValue.expensePrice,
+                    expenseTime: expenseFormattedVal,
+                    expenseDesc: inputValue.expenseDesc
+                };
+
+                StoreExpenseData(expenseDataSet);
+                //-----------------------------------------
+            }
             
-            //-----------------------------------------
-            // method to save data on firebase
-            const expenseDataSet = {
-                title: inputValue.expenseTitle,
-                price: inputValue.expensePrice,
-                desc: inputValue.expenseDesc
-            };
-
-            StoreExpenseData(expenseDataSet);
-            //-----------------------------------------
-
-
             /* expensesCtx.addExpenses({
                 id:new Date().toString + Math.random.toString(),
                 title: expenseTitle,

@@ -1,12 +1,12 @@
 import React, {useEffect, useState, useContext} from "react";
 
-import { Modal, View, Text, TouchableOpacity, TextInput, ScrollView, Pressable, FlatList } from "react-native";
+import { Modal, View, Text, TouchableOpacity, TextInput, ScrollView, Pressable, FlatList, Alert, async } from "react-native";
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import { FetchExpenseData } from "./component/ServerRequest";
+import { FetchExpenseData, deleteFirebaseExpData } from "./component/ServerRequest";
 
-export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseModal, handleFirebaseUpdateOp})=> {
+export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseModal, addFirebaseDataOpFlag, handleFirebaseUpdateOp})=> {
 
     const [modalVisible, setModalVisibile] = useState(true);
 
@@ -25,10 +25,16 @@ export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseMod
                 <View style={{flexDirection:'row', backgroundColor:'#1a1919', height:50, justifyContent:'space-between'}}>
                     <Text style={{color:'white', alignSelf:'center', fontSize:18, margin:5, fontWeight:'normal'}}>Firebase Expense Data</Text>
                     
-                    <TouchableOpacity style={{alignSelf:'center', alignContent:'flex-end', marginEnd:10 }} onPress={()=> handleShowFirebaseModal(false)}>
-                        <Icon name='close' size={30} color="#ffffff" />
-                    </TouchableOpacity>
-                        
+                    <View style={{flexDirection:'row', alignContent:'flex-end', marginEnd:10}} >
+                        <TouchableOpacity style={{alignSelf:'center', marginStart:15, marginEnd:20 }} onPress={()=> addFirebaseDataOpFlag(true)}>
+                            <Icon name='plus' size={30} color="#ffffff" />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{alignSelf:'center', alignContent:'flex-end', marginEnd:10 }} onPress={()=> handleShowFirebaseModal(false)}>
+                            <Icon name='close' size={30} color="#ffffff" />
+                        </TouchableOpacity> 
+                    </View>
+
                 </View>
             </>
         )
@@ -75,13 +81,26 @@ export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseMod
 
     }
 
+    const handleFirebaseDeleteOp=(id)=> {
+        Alert.alert('Confirm', 'Are you sure you want to delete?', [
+            {
+                text: 'Cancel',
+                style: 'Cancel',
+            }, 
+            {
+                text: 'delete',
+                onPress: ()=> deleteFirebaseExpData(id)
+            }
+        ]);
+    }
+
     const ExpenseDtlSection=({id, title, price, time, desc})=> { 
         return (            
-            <TouchableOpacity onPress={()=> handleExpDtlUpdateOp({id, title, price, time, desc}) }>
-                <View style={{flexDirection:'row', justifyContent:'space-between', borderRadius:10, borderColor:'white', borderWidth:1, margin:10, padding: 10, backgroundColor:'black', height:80,  }}>
+            <TouchableOpacity onPress={()=> handleExpDtlUpdateOp({id, title, price, time, desc}) } onLongPress={()=> handleFirebaseDeleteOp(id)}>
+                <View style={{flexDirection:'row', justifyContent:'space-between', borderRadius:10, borderColor:'white', borderWidth:1, margin:10, padding: 10, backgroundColor:'black', height:100,  }}>
                     <View style={{backgroundColor:'black', alignSelf:'center' }}>
                         <Text style={{alignSelf:'flex-start', maxWidth:250, maxHeight:30, fontWeight:'bold', fontSize:20, color:'white'}}>{title}</Text>
-                        <Text style={{alignSelf:'flex-start', maxWidth:250, maxHeight:30, fontSize:18, color:'white'}}>{time}</Text>
+                        <Text style={{alignSelf:'flex-start', maxWidth:250, maxHeight:50, fontSize:18, color:'white'}}>{time}</Text>
                     </View>
                     <View style={{backgroundColor:'white', flexDirection:'row', height:60, width:120, padding:5, borderColor:'black', borderRadius:5, borderWidth:1, alignSelf:'center',  }}>
                         <Text style={{alignSelf:'center', alignItems:'center', maxWidth:120, maxHeight:20, fontSize:16, fontWeight:'bold', color:'black', }}>Rs. {price}</Text>

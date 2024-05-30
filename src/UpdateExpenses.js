@@ -6,15 +6,19 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { ExpensesContext } from "./store/Expenses-context";
 import { updateDataValue } from "./store/sqlite_storage";
 
+import { updateFirebaseExpData } from "./component/ServerRequest";
+
 import Moment from 'moment';
 
 import DatePicker from 'react-native-date-picker';
 
 import {TextInputComponent, DescInputComponent } from '../src/component/FormComponents';
 
-export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, id, title, price, timeVal, desc})=> {
+export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, updateMode, id, title, price, timeVal, desc})=> {
 
     const [modalVisible, setModalVisibile] = useState(true);
+
+    const [updateFirebaseModeVal, setUpdateFirebaseModeVal] = useState(false);
 
     const [inputValue, setInputvalue] = useState({
         expenseID: '',
@@ -38,6 +42,8 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
     useEffect(()=> {
         setModalVisibile(modalVisibility);
 
+        setUpdateFirebaseModeVal(updateMode);                           //<--- set the update mode, whether firebase or local db data update op.
+
         inputChangeHandlerSection('expenseID', id);
         inputChangeHandlerSection('expenseTitle', title);
         inputChangeHandlerSection('expensePrice', price);
@@ -59,7 +65,17 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
         return (
             <>
                 <View style={{flexDirection:'row', backgroundColor:'#1a1919', height:50, justifyContent:'space-between'}}>
-                    <Text style={{color:'white', alignSelf:'center', fontSize:18, margin:5, fontWeight:'normal'}}>Update Expense</Text>
+                    
+                    <View style={{flexDirection:'row'}}>
+                        <Text style={{color:'white', alignSelf:'center', fontSize:18, margin:5, fontWeight:'normal'}}>Update Expense</Text>
+                        {
+                            updateFirebaseModeVal ? 
+                                <Text style={{color:'red', alignSelf:'center', fontSize:18, margin:5, fontWeight:'normal'}}>(Firebase)</Text>
+                            :
+                                null
+                        }
+                        
+                    </View>
                     
                     <TouchableOpacity style={{alignSelf:'center', alignContent:'flex-end', marginEnd:10 }} onPress={()=> handleUpdateExpenseModal(false)}>
                         <Icon name='close' size={30} color="#ffffff" />
@@ -71,7 +87,8 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
     }
 
     const updateExpenseData=()=> {
-        if(inputValue.expenseTitle.trim() != '' && inputValue.expensePrice.trim() != '' && inputValue.expenseTime.trim() != '') {
+
+        if(inputValue.expenseTitle.trim() != '' && inputValue.expensePrice.toString().trim() != '' && inputValue.expenseTime.trim() != '') {
 
             //---------------------------------
             setExpenseTitleValid(true);
@@ -81,9 +98,14 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
 
             const expenseFormattedVal = Moment(new Date(inputValue.expenseTime)).format("YYYY-MM-DD");
 
-            updateDataValue(inputValue.expenseID, inputValue.expenseTitle, inputValue.expensePrice, expenseFormattedVal, inputValue.expenseDesc, response=> {
-                alert(response);
-            });
+            if(!updateFirebaseModeVal) {
+                updateDataValue(inputValue.expenseID, inputValue.expenseTitle, inputValue.expensePrice, expenseFormattedVal, inputValue.expenseDesc, response=> {
+                    alert(response);
+                });
+            }
+            else {
+                const returnVal = updateFirebaseExpData(inputValue.expenseID, inputValue); 
+            }
 
             /* expensesCtx.updateExpenses(
                 expenseID,
@@ -107,7 +129,7 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, i
                 setExpenseTitleValid(true);
             }
 
-            if(inputValue.expensePrice.trim() === '') {
+            if(inputValue.expensePrice.toString().trim() === '') {
                 setExpensePriceValid(false);
             } else {
                 setExpensePriceValid(true);
