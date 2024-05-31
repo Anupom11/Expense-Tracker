@@ -15,6 +15,8 @@ import {
 
 import { useNavigation } from '@react-navigation/native';
 
+import { do_login_op } from '../Util/Auth';
+
 //import AuthContext from "./AppContext";  
 //import AuthContext from '../source/AppContext';
 
@@ -35,20 +37,27 @@ function SignIn({navigation}) {
     const [userPasswd, setUserPasswd]   = useState('');
 
     function doSignInOp() {
-        navigation.navigate('Main');
-        /* setLoading(true);
+        const validEmail    = userEmail.includes('@') ? true : false;
+        const validPasswd   = userPasswd.length >=6 ? true : false;
 
-        if(userEmail != '' || userPasswd != '') {
-            var userDetails = { 
-                email: userEmail,
-                password: userPasswd
-            };
+        if(validEmail && validPasswd) {
+            do_login_op(userEmail, userPasswd, resp=> { 
+                console.log("Login::"+JSON.stringify(resp));
+                
+                if(resp.status === 200) {
+                    alert('Logged in successfully!')
+                    navigation.navigate('Main');
+                }
+                else if(resp.status === 400) {
+                    alert('Failed to do login operation!');
+                }
 
-            signIn(userDetails);
-        }
+            });
+        } 
         else {
-            alert("Please enter the details!");
-        } */
+            alert('Email or password may be invalid! Please enter valid details');
+        }
+ 
     }
 
     function doForgetPwd() {
@@ -102,6 +111,7 @@ function SignIn({navigation}) {
                     <TextInput 
                         style={styleSheet.textInput} 
                         keyboardType={'email-address'}
+                        value={userEmail}
                         onChangeText={(text)=>setUserEmail(text)}
                         placeholder='Please enter your email'/>
                 </View>
@@ -111,6 +121,7 @@ function SignIn({navigation}) {
                     <TextInput 
                         style={styleSheet.textInput} 
                         keyboardType={'default'}
+                        value={userPasswd}
                         placeholder='Please enter your password' 
                         onChangeText={(text)=>setUserPasswd(text)}
                         secureTextEntry={true}/>

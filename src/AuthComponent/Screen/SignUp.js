@@ -143,12 +143,12 @@ function SignIn({navigation}) {
                         } 
                     </View>
 
-                    {/* <View style={{alignItems:'center', marginTop:25}}>
+                    <View style={{alignItems:'center', marginTop:25}}>
                         <TouchableOpacity
-                            onPress={()=> doForgetPwd()}>
-                            <Text style={{color:'#f73e05', fontSize: 16}}>Forgot Password!</Text>
+                            onPress={()=> navigation.navigate('Login') }>
+                            <Text style={{color:'#f73e05', fontSize: 16}}>Login to existing account</Text>
                         </TouchableOpacity>
-                    </View> */}
+                    </View>
 
                     <View style={{alignItems:'center', marginTop:25}}>
                         {/* <GoogleSigninButton
