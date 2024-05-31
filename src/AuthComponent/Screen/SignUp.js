@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, { useState, useRef } from 'react';
 import {
     StyleSheet, 
     Text, 
@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 
 import LoadingProgress from '../Comp/Loading';
-
 import { create_user } from '../Util/Auth'; 
 
 //import AuthContext from "./AppContext";  
@@ -38,6 +37,12 @@ function SignIn({navigation}) {
     const [userPasswd, setUserPasswd]       = useState('');
     const [reUserPasswd, setReUserPasswd]   = useState('');
 
+    const resetUserDetails=()=> { 
+        setUserEmail('');
+        setUserPasswd('');
+        setReUserPasswd('');
+    }
+
     function doSignUpOp() {
 
         setLoading(true);
@@ -52,6 +57,9 @@ function SignIn({navigation}) {
                 create_user(userEmail, userPasswd, resp=> {  
                     if(resp.hasOwnProperty('data') && resp.data.hasOwnProperty('refreshToken')) {
                         // successfully account created.  
+                        alert("Account created successfully!");
+                        
+                        resetUserDetails();
                     }
                     else {
                         // failed to create account 
@@ -71,34 +79,6 @@ function SignIn({navigation}) {
             setLoading(false);
             alert("Email or password may be invalid! Please enter valid details.");
         }
-    }
-
-    function doForgetPwd() {
-        forgotPwd();
-    }
-
-    const LoaderSection=(props)=> {
-        {console.log("Load::"+props.loading)}
-        return (
-            <Modal
-                transparent={true}
-                animationType={'fade'}
-                visible={props.loading}
-                onRequestClose={()=> { setLoading(false) }}>
-                
-                <View style={{backgroundColor:'#ff0000'}}>
-                    <View>
-                        <TouchableOpacity onPress={()=> setLoading(false)}>
-                            <Text>Close</Text>
-                        </TouchableOpacity>
-                        
-                        <ActivityIndicator animating={props.loading}  size="small" color="mediumblue" />
-                        <Text style={{color:'blue', fontSize:13}}>Loading</Text>
-                    </View>
-                </View>
-
-            </Modal>
-        )
     }
 
     return (
@@ -122,6 +102,7 @@ function SignIn({navigation}) {
                         <TextInput 
                             style={styleSheet.textInput} 
                             keyboardType={'email-address'}
+                            value={userEmail}
                             onChangeText={(text)=>setUserEmail(text)}
                             placeholder='Please enter your email'/>
                     </View>
@@ -132,6 +113,7 @@ function SignIn({navigation}) {
                             style={styleSheet.textInput} 
                             keyboardType={'default'}
                             placeholder='Please enter your password' 
+                            value={userPasswd}
                             onChangeText={(text)=>setUserPasswd(text)}
                             secureTextEntry={true}/>
                     </View>
@@ -141,6 +123,7 @@ function SignIn({navigation}) {
                             style={styleSheet.textInput} 
                             keyboardType={'default'}
                             placeholder='Re-enter your password' 
+                            value={reUserPasswd}
                             onChangeText={(text)=>setReUserPasswd(text)}
                             secureTextEntry={true}/>
                     </View>

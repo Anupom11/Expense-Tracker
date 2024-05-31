@@ -20,13 +20,11 @@ export async function create_user(email, password, callback) {
       };
  
     axios.post(createUserLink, data, config)
-    .then(res=> {
-        console.log("Res:"+JSON.stringify(res));
+    .then(res=> { 
         callback(res)
     })
     .catch(error=> {
-        // failed to create account. Error
-        console.log("Error:"+JSON.stringify(error.error));
+        // failed to create account. Error 
         callback(error);
     });
 }
