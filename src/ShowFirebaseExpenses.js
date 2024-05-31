@@ -46,9 +46,15 @@ export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseMod
 
     //--------------------------------------------------------
     // method to get the data from firebase
-    async function getExpenseDataSet() {            
-        const dataset = await FetchExpenseData(); 
-        setDATA(dataset);
+    async function getExpenseDataSet() {   
+        try{
+            const dataset = await FetchExpenseData();
+            setDATA(dataset);
+        }  
+        catch(error) {
+            console.log(error);
+        }        
+         
         setIsFetchingData(false);
         //console.log("Data1::"+JSON.stringify(dataset));
     }

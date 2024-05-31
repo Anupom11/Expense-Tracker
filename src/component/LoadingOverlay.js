@@ -10,8 +10,7 @@ function LoadingOverlay() {
 export default LoadingOverlay;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
+    container: { 
         justifyContent:'center',
         alignItems: 'center',
         padding: 24
