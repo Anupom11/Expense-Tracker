@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useContext} from 'react';
 import {
     StyleSheet, 
     Text, 
@@ -17,6 +17,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import { do_login_op } from '../Util/Auth';
 
+import { AuthContext } from '../../store/auth-context';
+
 //import AuthContext from "./AppContext";  
 //import AuthContext from '../source/AppContext';
 
@@ -31,6 +33,8 @@ function SignIn({navigation}) {
 
     //const {signIn, signOut, signUp, forgotPwd} = React.useContext(AuthContext);
 
+    const authCtx = useContext(AuthContext);
+
     const [loading, setLoading] = useState(false);
 
     const [userEmail, setUserEmail]     = useState('');
@@ -41,12 +45,12 @@ function SignIn({navigation}) {
         const validPasswd   = userPasswd.length >=6 ? true : false;
 
         if(validEmail && validPasswd) {
-            do_login_op(userEmail, userPasswd, resp=> { 
-                console.log("Login::"+JSON.stringify(resp));
+            do_login_op(userEmail, userPasswd, resp=> {  
                 
                 if(resp.status === 200) {
-                    alert('Logged in successfully!')
-                    navigation.navigate('Main');
+                    alert('Logged in successfully!');
+
+                    authCtx.authenticate(resp.data.idToken); 
                 }
                 else if(resp.status === 400) {
                     alert('Failed to do login operation!');

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import {
     StyleSheet, 
     Text, 
@@ -17,6 +17,8 @@ import {
 import LoadingProgress from '../Comp/Loading';
 import { create_user } from '../Util/Auth'; 
 
+import { AuthContext } from '../../store/auth-context';
+
 //import AuthContext from "./AppContext";  
 //import AuthContext from '../source/AppContext';
 
@@ -30,6 +32,8 @@ import { create_user } from '../Util/Auth';
 function SignIn({navigation}) {
 
     //const {signIn, signOut, signUp, forgotPwd} = React.useContext(AuthContext);
+
+    const authCtx = useContext(AuthContext);
 
     const [loading, setLoading] = useState(false);
 
@@ -55,9 +59,11 @@ function SignIn({navigation}) {
             if(paswdMatched) {   
 
                 create_user(userEmail, userPasswd, resp=> {  
-                    if(resp.hasOwnProperty('data') && resp.data.hasOwnProperty('refreshToken')) {
+                    if(resp.hasOwnProperty('data') && resp.data.hasOwnProperty('idToken')) {
                         // successfully account created.  
                         alert("Account created successfully!");
+
+                        authCtx.authenticate(resp.data.idToken);
                         
                         resetUserDetails();
                     }
