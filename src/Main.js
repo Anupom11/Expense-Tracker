@@ -15,7 +15,9 @@ import ShowFirebaseExpenses from "./ShowFirebaseExpenses";
 
 import LoadingOverlay from "./component/LoadingOverlay";
 
-const HeaderSection=({handleAddExpenseModal, handleShowFirebaseExpenseModal})=> {
+import { AuthContext } from "./store/auth-context";
+
+const HeaderSection=({handleAddExpenseModal, handleShowFirebaseExpenseModal, signoutOp})=> {
     return (
         <>
             <View style={{flexDirection:'row', backgroundColor:'#1a1919', height:50, justifyContent:'space-between'}}>
@@ -29,6 +31,10 @@ const HeaderSection=({handleAddExpenseModal, handleShowFirebaseExpenseModal})=> 
                     <TouchableOpacity style={{alignSelf:'center', marginStart:15, marginEnd:15 }} onPress={()=> handleAddExpenseModal(true)}>
                         <Icon name='plus' size={30} color="#ffffff" />
                     </TouchableOpacity>
+
+                    <TouchableOpacity style={{alignSelf:'center', marginStart:15, marginEnd:15 }} onPress={()=> signoutOp()}>
+                        <Icon name='sign-out'text="Sign out" size={30} color="#ffffff"  />
+                    </TouchableOpacity>
                 </View>
                 
             </View>
@@ -37,6 +43,8 @@ const HeaderSection=({handleAddExpenseModal, handleShowFirebaseExpenseModal})=> 
 }
 
 export default Main=()=> {
+
+    const authCtx = useContext(AuthContext);
 
     const [addExpenseModal, setAddExpenseModal]             = useState(false);
     const [updateExpenseModal, setUpdateExpenseModal]       = useState(false);
@@ -238,6 +246,11 @@ export default Main=()=> {
         setUpdateFirebaseMode(true)
     }
 
+    const doSignOutOp=()=> {
+        authCtx.logout();
+        alert('Logged out successfully!');
+    }
+
     return (
         <>
             <StatusBar
@@ -247,7 +260,7 @@ export default Main=()=> {
 
             {
                 //headerSection()
-                <HeaderSection handleAddExpenseModal={handleAddExpenseModal} handleShowFirebaseExpenseModal={handleShowFirebaseExpenseModal}/>
+                <HeaderSection handleAddExpenseModal={handleAddExpenseModal} handleShowFirebaseExpenseModal={handleShowFirebaseExpenseModal} signoutOp={doSignOutOp}/>
             }
 
             {
