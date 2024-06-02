@@ -14,7 +14,11 @@ import DatePicker from 'react-native-date-picker';
 
 import {TextInputComponent, DescInputComponent } from '../src/component/FormComponents';
 
+import { AuthContext } from "./store/auth-context";
+
 export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, updateMode, id, title, price, timeVal, desc})=> {
+
+    const authCtx = useContext(AuthContext);
 
     const [modalVisible, setModalVisibile] = useState(true);
 
@@ -104,7 +108,7 @@ export default UpdateExpenseModal=({modalVisibility, handleUpdateExpenseModal, u
                 });
             }
             else {
-                const returnVal = updateFirebaseExpData(inputValue.expenseID, inputValue); 
+                const returnVal = updateFirebaseExpData(authCtx, inputValue.expenseID, inputValue); 
             }
 
             /* expensesCtx.updateExpenses(

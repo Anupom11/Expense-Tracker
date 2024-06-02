@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import axios from "axios";
+
+import { AuthContext } from "../store/auth-context";
 
 const firebaseBaseLink = 'https://expensetracker-6a6d5-default-rtdb.asia-southeast1.firebasedatabase.app/';
 
 const firebaseLink = 'https://expensetracker-6a6d5-default-rtdb.asia-southeast1.firebasedatabase.app/expenses.json';
 
-export function StoreExpenseData(expenseData) { 
-    axios.post(firebaseLink, expenseData)
+export function StoreExpenseData(authCtx, expenseData) { 
+
+    const url = firebaseLink + "?auth=" + authCtx.token;
+
+    axios.post(url, expenseData)
     .then(function(response) {
         console.log("Axios::"+response);
     })
@@ -18,7 +23,7 @@ export function StoreExpenseData(expenseData) {
     });
 }
 
-export async function FetchExpenseData() { 
+export async function FetchExpenseData(authCtx) { 
     
     /* await axios.get(firebaseLink)
     .then(function(response) {
@@ -45,7 +50,9 @@ export async function FetchExpenseData() {
         return [];
     }); */
 
-    const response = await axios.get(firebaseLink);
+    const url = firebaseLink + '?auth='+authCtx.token; 
+
+    const response = await axios.get(url);
 
     const expenseData = [];
 
@@ -65,12 +72,25 @@ export async function FetchExpenseData() {
 
 }
 
-export function updateFirebaseExpData(id, expenseData) {
-    return axios.put(firebaseBaseLink + `/expenses/${id}.json`, expenseData)
+export function updateFirebaseExpData(authCtx, id, expenseData) {
+    
+    const url = firebaseBaseLink + `/expenses/${id}.json` + '?auth='+authCtx.token; 
+
+    return axios.put(url, expenseData)
 }
 
-export async function deleteFirebaseExpData(id) { 
-    return axios.delete(firebaseBaseLink + `/expenses/${id}.json`);
+export async function deleteFirebaseExpData(authCtx, id) { 
+
+    const url = firebaseBaseLink + `/expenses/${id}.json` + '?auth='+authCtx.token; 
+
+    const retrn = axios.delete(url);  
+
+    if(retrn != null) 
+        alert("Data deleted successfully!");
+    else 
+        alert("Failed to delete data!");
+
+    return retrn;
 }
 
 

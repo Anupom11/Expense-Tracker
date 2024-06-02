@@ -8,7 +8,11 @@ import { FetchExpenseData, deleteFirebaseExpData } from "./component/ServerReque
 
 import LoadingOverlay from "./component/LoadingOverlay";
 
+import { AuthContext } from "./store/auth-context";
+
 export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseModal, addFirebaseDataOpFlag, handleFirebaseUpdateOp})=> {
+
+    const authCtx = useContext(AuthContext);
 
     const [isFetchingData, setIsFetchingData] = useState(true);
 
@@ -19,7 +23,7 @@ export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseMod
     useEffect(()=> {
         setModalVisibile(modalVisibility);
 
-        getExpenseDataSet();    // call the method to get expense data from firebase
+        getExpenseDataSet(authCtx);    // call the method to get expense data from firebase
 
     }, [false]);
 
@@ -27,7 +31,7 @@ export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseMod
         return (
             <>
                 <View style={{flexDirection:'row', backgroundColor:'#1a1919', height:50, justifyContent:'space-between'}}>
-                    <Text style={{color:'white', alignSelf:'center', fontSize:18, margin:5, fontWeight:'normal'}}>Firebase Expense Data</Text>
+                    <Text style={{color:'red', alignSelf:'center', fontSize:18, margin:5, fontWeight:'normal'}}>Firebase Expense Data</Text>
                     
                     <View style={{flexDirection:'row', alignContent:'flex-end', marginEnd:10}} >
                         <TouchableOpacity style={{alignSelf:'center', marginStart:15, marginEnd:20 }} onPress={()=> addFirebaseDataOpFlag(true)}>
@@ -46,9 +50,9 @@ export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseMod
 
     //--------------------------------------------------------
     // method to get the data from firebase
-    async function getExpenseDataSet() {   
+    async function getExpenseDataSet(authCtx) {   
         try{
-            const dataset = await FetchExpenseData();
+            const dataset = await FetchExpenseData(authCtx);
             setDATA(dataset);
         }  
         catch(error) {
@@ -100,7 +104,7 @@ export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseMod
             }, 
             {
                 text: 'delete',
-                onPress: ()=> deleteFirebaseExpData(id)
+                onPress: ()=> deleteFirebaseExpData(authCtx, id)
             }
         ]);
     }

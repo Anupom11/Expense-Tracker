@@ -16,7 +16,11 @@ import { TextInputComponent, DescInputComponent, TextInputComponent1 } from "./c
 
 import { StoreExpenseData } from "./component/ServerRequest";
 
+import { AuthContext } from "./store/auth-context";
+
 export default AddExpenseModal=({modalVisibility, handleAddExpenseModal, addFirebaseDataMode})=> {
+
+    const authCtx = useContext(AuthContext);
 
     const [modalVisible, setModalVisibile] = useState(true);
 
@@ -111,7 +115,7 @@ export default AddExpenseModal=({modalVisibility, handleAddExpenseModal, addFire
                     expenseDesc: inputValue.expenseDesc
                 };
 
-                StoreExpenseData(expenseDataSet);
+                StoreExpenseData(authCtx, expenseDataSet);               //<--- store data on the firebase
                 //-----------------------------------------
             }
             
