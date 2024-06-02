@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from "react";
 
-import { Modal, View, Text, TouchableOpacity, TextInput, ScrollView, Pressable, FlatList, Alert, async } from "react-native";
+import { Modal, View, Text, TouchableOpacity, TextInput, ScrollView, Pressable, FlatList, Alert, async, RefreshControl } from "react-native";
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -19,6 +19,8 @@ export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseMod
     const [modalVisible, setModalVisibile] = useState(true);
 
     const [DATA, setDATA] = useState([]);
+
+    const [isRefreshing, setisRefreshing] = useState(false);
 
     useEffect(()=> {
         setModalVisibile(modalVisibility);
@@ -54,6 +56,8 @@ export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseMod
         try{
             const dataset = await FetchExpenseData(authCtx);
             setDATA(dataset);
+
+            setisRefreshing(false);
         }  
         catch(error) {
             console.log(error);
@@ -71,7 +75,7 @@ export default ShowFirebaseExpenseModal=({modalVisibility, handleShowFirebaseMod
                     DATA.length > 0 ?
                         <View>
                             <FlatList
-                                //refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={()=> getExpenseData() } /> }
+                                refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={()=> getExpenseDataSet(authCtx) } /> }
                                 data={DATA}
                                 renderItem={({item}) => <ExpenseDtlSection id={item.id} title={item.title} price={item.price} time={item.time} desc={item.desc}/> }
                                 keyExtractor={item => item.id}
