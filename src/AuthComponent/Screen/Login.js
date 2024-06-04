@@ -18,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import { do_login_op } from '../Util/Auth';
 
 import { AuthContext } from '../../store/auth-context';
+import { storeDataSecurly } from '../Util/StoreTokenSecurly';
 
 //import AuthContext from "./AppContext";  
 //import AuthContext from '../source/AppContext';
@@ -45,10 +46,21 @@ function SignIn({navigation}) {
         const validPasswd   = userPasswd.length >=6 ? true : false;
 
         if(validEmail && validPasswd) {
-            do_login_op(userEmail, userPasswd, resp=> {  
-                
+            do_login_op(userEmail, userPasswd, resp=> {   
+
+                const userData = JSON.stringify({ 
+                    email: resp.data.email,
+                    accessToken : resp.data.idToken,
+                    refreshToken : resp.data.refreshToken, 
+                }); 
+
+                storeDataSecurly("user_session", userData); //<--- store the user data for future operation
+
                 if(resp.status === 200) {
                     alert('Logged in successfully!');
+
+                    //const dataGet = getSecureData("user_session");
+                    //console.log("dataGet::"+JSON.stringify(dataGet));
 
                     authCtx.authenticate(resp.data.idToken); 
                 }
