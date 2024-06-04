@@ -17,6 +17,8 @@ import LoadingOverlay from "./component/LoadingOverlay";
 
 import { AuthContext } from "./store/auth-context";
 
+import { removeSecureKey } from "./AuthComponent/Util/StoreTokenSecurly";
+
 const HeaderSection=({handleAddExpenseModal, handleShowFirebaseExpenseModal, signoutOp})=> {
     return (
         <>
@@ -248,6 +250,8 @@ export default Main=()=> {
 
     const doSignOutOp=()=> {
         authCtx.logout();
+        removeSecureKey("user_session");    //<--- remove the saved user details.
+
         alert('Logged out successfully!');
     }
 

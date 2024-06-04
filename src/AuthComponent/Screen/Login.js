@@ -1,4 +1,4 @@
-import React, {useState, useRef, useContext} from 'react';
+import React, {useState, useRef, useContext, useEffect} from 'react';
 import {
     StyleSheet, 
     Text, 
@@ -18,7 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import { do_login_op } from '../Util/Auth';
 
 import { AuthContext } from '../../store/auth-context';
-import { storeDataSecurly } from '../Util/StoreTokenSecurly';
+import { storeDataSecurly, getSecureData } from '../Util/StoreTokenSecurly';
 
 //import AuthContext from "./AppContext";  
 //import AuthContext from '../source/AppContext';
@@ -41,6 +41,10 @@ function SignIn({navigation}) {
     const [userEmail, setUserEmail]     = useState('');
     const [userPasswd, setUserPasswd]   = useState('');
 
+    useEffect(()=> {
+        
+    }, []);
+
     function doSignInOp() {
         const validEmail    = userEmail.includes('@') ? true : false;
         const validPasswd   = userPasswd.length >=6 ? true : false;
@@ -58,9 +62,6 @@ function SignIn({navigation}) {
 
                 if(resp.status === 200) {
                     alert('Logged in successfully!');
-
-                    //const dataGet = getSecureData("user_session");
-                    //console.log("dataGet::"+JSON.stringify(dataGet));
 
                     authCtx.authenticate(resp.data.idToken); 
                 }

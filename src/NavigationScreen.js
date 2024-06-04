@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -11,9 +11,12 @@ import ExpensesContextProvider from "./store/Expenses-context";
 
 import AuthContextProvider, {AuthContext} from "./store/auth-context";
 
+import { getSecureData } from "./AuthComponent/Util/StoreTokenSecurly";
+
 const Stack = createNativeStackNavigator();
 
 function App() {
+
     return (
         <>
             <AuthContextProvider>
@@ -28,6 +31,19 @@ function App() {
 function Navigation() {
 
     const authCtx = useContext(AuthContext);
+
+    useEffect(()=> {
+
+        async function checkUserDetails() {
+            const dataGet = JSON.parse(await getSecureData("user_session"));
+            if(dataGet !==null && dataGet !== undefined) {
+                authCtx.authenticate(dataGet.accessToken);
+            }
+        }
+
+        checkUserDetails();
+
+    }, []);
 
     return (
         <NavigationContainer> 
